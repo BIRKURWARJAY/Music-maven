@@ -2,14 +2,19 @@ import { createContext, useContext } from "react";
 
 export const LoginContext = createContext({
   users: [
-      {
+    {
+      id: 1,
       userName: "",
       email: "",
       password: "",
-      agreedToTC: false
+      agreedToTC: false,
+      loggedIn: false,
+      loggedOut: true
       }
   ],
-  addUser: (user) => {}
+  addUser: (user) => { },
+  isLoggedIn: () => { },
+  isLoggedOut: () => {}
 })
 
 export const useLoginContext = () => useContext(LoginContext);

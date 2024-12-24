@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { LoginProvider } from "../Contexts/LoginContext";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [users, setUsers] = useState([]);
@@ -7,6 +8,12 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checkbox, setCheckbox] = useState(false);
+  const [issignup, setisSignup] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(users);
+  },[users])
 
   const addUser = (user) => {
     setUsers((prev) => [user, ...prev])
@@ -14,13 +21,34 @@ function Login() {
 
   const add = (e) => {
     e.preventDefault();
-    if (userName.trim().length < 1) return;
-    addUser( {userName, email, password, agreedToTC: checkbox} )
+    if (userName.trim().length < 1 || email.trim().length < 1 || password.trim().length < 1) return;
+    (issignup) ? addUser({ id: Date.now(), userName, email, password, agreedToTC: checkbox, loggedIn:true, loggedOut:false }) : isLoggedIn();
+    navigate("/Home");
+  }
+
+  const isLoggedIn = () => {
+    const foundUser = users.find((user) => user.email === email && user.password === password);
+    if (foundUser) {
+      foundUser.loggedIn = true;
+      foundUser.loggedOut = false;
+      navigate("/Home");
+    } else {
+      window.alert("Invalid Email or Password");
+    }
+  }
+
+  const isLoggedOut = () => { 
+    const foundUser = users.find((user) => user.email === email && user.password === password);
+    if (foundUser) {
+      foundUser.loggedOut = true;
+      foundUser.loggedIn = false;
+      navigate("/ ");
+    }
   }
 
   return (
     <>
-      <LoginProvider value={{users, addUser}}>
+      <LoginProvider value={{users, addUser, isLoggedIn, isLoggedOut}}>
         <div className="xl:mx-[20%] bg-white my-16 max-md:my-0 border p-16 max-md:px-6 max-md:py-3 max-md:border-none">
           <div className="flex divide-x-2 max-md:divide-x-0">
             <div className="flex-1 pr-16 max-md:hidden">
@@ -42,31 +70,35 @@ function Login() {
               />
             </div>
 
-            <div className="flex-1 pl-16 max-md:pl-0">
+            <div className="flex-1 pl-16 max-md:pl-0 content-center">
               <button
                 type="button"
                 className="w-full rounded text-center py-1 flex justify-around items-center border-2 max-2xl:px-4"
               >
                 <i className="fa-brands fa-google-plus-g text-white bg-orange-500 p-2 rounded"></i>
-                <p>Sign in with Google</p>
+                <p>{(issignup) ? "Sign" : "Log"} in with Google</p>
               </button>
 
               <p className="text-center flex items-center justify-between">
-                <span className="mb-4 text-rose-600 pl-1">__</span> Or sign in
+                <span className="mb-4 text-rose-600 pl-1">__</span> Or {(issignup) ? "Sign" : "Log"} in
                 with your email{" "}
                 <span className="mb-4 text-rose-600 pr-1">__</span>
               </p>
 
               <form className="flex flex-col" onSubmit={add}>
-                <label htmlFor="FullName">Full Name:</label>
-                <input
-                  type="text"
-                  placeholder="Enter Name"
-                  id="FullName"
-                  className="border-2 rounded p-2 mt-2"
-                  onChange={(e) => setUserName(e.target.value.trim())}
-                  required
-                />
+                {(issignup) ? <>
+                  <label htmlFor="FullName">Full Name:</label>
+                  <input
+                    type="text"
+                    placeholder="Enter Name"
+                    id="FullName"
+                    className={`border-2 rounded p-2 mt-2 `}
+                    onChange={(e) => setUserName(e.target.value.trim())}
+                    required
+                  /> 
+                </>
+                  : ""
+                }
 
                 <label htmlFor="Email" className="mt-2">
                   Email:
@@ -89,6 +121,7 @@ function Login() {
                   placeholder="**********"
                   className="border-2 rounded p-2 mt-2"
                   onChange={(e) => setPassword(e.target.value.trim())}
+                  autoComplete="on"
                   required
                 />
 
@@ -96,11 +129,11 @@ function Login() {
                   type="submit"
                   className="text-center bg-orange-500 w-full py-2 rounded my-6"
                 >
-                  Sign in
+                  {(issignup) ? "Sign" : "Log"} in
                 </button>
               </form>
 
-              <div className="flex">
+              {(issignup) ? <div className="flex">
                 <input
                   type="checkbox"
                   required
@@ -109,10 +142,16 @@ function Login() {
                 />
                 <p className="mx-2">I agreed to the Terms and Conditions</p>
               </div>
+                : ""
+              }
 
               <p className="text-center mt-3">
-                Don't have an account?{" "}
-                <span className="text-blue-400 cursor-pointer">Sign in</span>
+                {(issignup) ? "Already have an account? " : "Don't have an account? "}{" "}
+                <span className="text-blue-400 cursor-pointer"
+                  onClick={() => setisSignup((prev) => !prev)}
+                >
+                  {(issignup) ? "Log in" : "Sign up"}
+                </span>
               </p>
             </div>
           </div>

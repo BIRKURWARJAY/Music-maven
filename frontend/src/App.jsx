@@ -1,15 +1,15 @@
-import Login from "./Components/LoginComponent"
-import { useLoginContext } from "./Contexts/LoginContext"
-
+import { Outlet } from "react-router-dom";
+import { Header, Footer } from "./Components/indexComp";
 
 
 function App() {
-
   return (
-    <>
-      <Login />
-    </>
-  )
+    <div>
+      {/* <Header /> */}
+      <Outlet />
+      {/* <Footer /> */}
+    </div>
+  );
 }
 
-export default App
+export default App;
