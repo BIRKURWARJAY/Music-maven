@@ -1,15 +1,41 @@
-import express from "express";
+// Function to get the access token
+const getAccessToken = async () => {
+  const clientId = '6165f00cf08c4e44837ce912f57d6e6d'; // Replace with your client ID
+  const clientSecret = '1dfb3383fba14678b42d3e66159d1e6c'; // Replace with your client secret
 
-const exp = express();
+  const auth = 'Basic ' + btoa(clientId + ':' + clientSecret);
 
-exp.get("/", (req, res) => {
-  res.send("Backend")
-})
+  const response = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Authorization': auth,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials'
+    })
+  });
 
-e
+  const data = await response.json();
+  return data.access_token; // Return the access token
+};
 
-// const port = 3000;
+let accessToken = await getAccessToken();
+console.log(accessToken);
 
-exp.listen(4000, () => {
-  console.log(`listening on port http://localhost:${4000}`)
-})
+
+const fetchSongs = async (accessToken, query) => {
+  const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=10`, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  });
+
+  const data = await response.json();
+  let song = data.tracks.items; // Get the list of tracks
+  return (`${song[0].name}:'${song[0].album.artists[0].name}': ${song[0].album.release_date.split("-").reverse().join("-")}`); // Return the list of tracks
+};
+
+
+let songs = await fetchSongs(accessToken, 'trnding');
+console.warn(songs);
