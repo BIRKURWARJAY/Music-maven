@@ -32,10 +32,10 @@ const fetchSongs = async (accessToken, query) => {
   });
 
   const data = await response.json();
-  let song = data.tracks.items; // Get the list of tracks
-  return (`${song[0].name}:'${song[0].album.artists[0].name}': ${song[0].album.release_date.split("-").reverse().join("-")}`); // Return the list of tracks
+  let song = data.tracks.items;
+  return (`${song[0].name}:'${song[0].album.artists[0].name}': ${song[0].album.release_date.split("-").reverse().join("-")}`); 
 };
 
 
-let songs = await fetchSongs(accessToken, 'trnding');
+let songs = await fetchSongs(accessToken, 'trending');
 console.warn(songs);

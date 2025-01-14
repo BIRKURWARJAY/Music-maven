@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 
 
-
-function Login() {
+function SignUp() {
   return (
     <>
       <div className="xl:mx-[20%] bg-white my-16 max-md:my-0 border p-16 max-md:px-6 max-md:py-3 max-md:border-none">
@@ -32,15 +31,25 @@ function Login() {
               className="w-full rounded text-center py-1 flex justify-around items-center border-2 max-2xl:px-4"
             >
               <i className="fa-brands fa-google-plus-g text-white bg-orange-500 p-2 rounded"></i>
-              <p>Log in with Google</p>
+              <p>Sign in with Google</p>
             </button>
 
             <p className="text-center flex items-center justify-between">
-              <span className="mb-4 text-rose-600 pl-1">__</span> Or Log in with
-              your email <span className="mb-4 text-rose-600 pr-1">__</span>
+              <span className="mb-4 text-rose-600 pl-1">__</span> Or Sign up
+              with your email{" "}
+              <span className="mb-4 text-rose-600 pr-1">__</span>
             </p>
 
             <form className="flex flex-col">
+              <label htmlFor="FullName">Full Name:</label>
+              <input
+                type="text"
+                placeholder="Enter Name"
+                id="FullName"
+                className={`border-2 rounded p-2 mt-2 `}
+                required
+              />
+
               <label
                 htmlFor="Email"
                 className="mt-2"
@@ -64,7 +73,7 @@ function Login() {
               <input
                 type="password"
                 id="Password"
-                placeholder="********"
+                placeholder="**********"
                 className="border-2 rounded p-2 mt-2"
                 autoComplete="on"
                 required
@@ -88,12 +97,12 @@ function Login() {
             </div>
 
             <p className="text-center mt-3">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
+                to={"/"}
                 className="text-blue-400 cursor-pointer"
-                to={"/signup"}
               >
-                Sign Up
+                Log In
               </Link>
             </p>
           </div>
@@ -103,4 +112,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignUp;

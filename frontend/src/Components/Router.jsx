@@ -1,16 +1,15 @@
 
-import { Login, Playlist, App, SongDetails, Home } from "./indexComp"
+import { Login, Playlist, App, SongDetails, Home, SignUp } from "./indexComp"
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom'
 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
-      <Route path='' element={<Login />}>
-        <Route path='trendingsong/:title/:id/details' element={<SongDetails />} />
-      </Route>
-      <Route path='Home' element={<Home />} />
-      <Route path='Playlist' element={<Playlist />} />
+      <Route path='login' element={<Login />} />
+      <Route path='signup' element={ <SignUp /> } />
+      <Route path='home' element={<Home />} />
+      <Route path='playlist' element={<Playlist />} />
     </Route>
   )
 )
