@@ -1,14 +1,17 @@
-import { useLoginContext } from "../Contexts/LoginContext";
+import ArtsitsAlbum from "./ArtistsAlbum";
+import TrendingSongsList from "./TrendingSongsList";
+
 
 
 function Home() {
 
-  const { users, isLoggedOut } = useLoginContext();
 
   return (
     <>
       <div>
-        <button onClick={() => { isLoggedOut();  console.log(users)}}>Logout</button>
+        < TrendingSongsList />
+        < ArtsitsAlbum />
+        
       </div>  
     </>
   )

@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
-import SongHome from './SongHome';
+import SongHome from "./SongHome";
 
 
-function TrendingSongsList() { 
-
-
-  //fetch to setSongs
-
+const ArtsitsAlbum = () => {
   return (
-    <>
+    <div>
       <div className="trending-songs-list flex flex-nowrap overflow-x-auto gap-4 bg-black">
         {/* {songs.map((song) => (
             <SongHome key={song.id} song={song} />
         ))} */}
       </div>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-
-export default TrendingSongsList;
+export default ArtsitsAlbum;
