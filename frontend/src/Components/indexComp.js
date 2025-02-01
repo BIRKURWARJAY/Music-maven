@@ -18,6 +18,8 @@ import Premium from "./Premium";
 import Payment from "./Payment";
 import Profile from "./Profile";
 import SearchBar from "./SearchBar";
+import Aside from "./Aside";
+import Genres from "./Genres";
 
 export {
   App,
@@ -39,5 +41,7 @@ export {
   Premium,
   Payment,
   Profile,
-  SearchBar
+  SearchBar,
+  Aside,
+  Genres,
 };

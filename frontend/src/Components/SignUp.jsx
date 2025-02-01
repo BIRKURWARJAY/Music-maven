@@ -99,7 +99,7 @@ function SignUp() {
             <p className="text-center mt-3">
               Already have an account?{" "}
               <Link
-                to={"/"}
+                to={"/login"}
                 className="text-blue-400 cursor-pointer"
               >
                 Log In

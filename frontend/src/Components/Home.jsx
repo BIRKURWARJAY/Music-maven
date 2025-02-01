@@ -1,5 +1,4 @@
-import ArtsitsAlbum from "./ArtistsAlbum";
-import TrendingSongsList from "./TrendingSongsList";
+import { Header, Genres, TrendingSongsList, ArtistsAlbum } from "./indexComp";
 
 
 
@@ -8,11 +7,12 @@ function Home() {
 
   return (
     <>
-      <div>
-        < TrendingSongsList />
-        < ArtsitsAlbum />
-        
-      </div>  
+      <Header />  
+      <div className="flex flex-col gap-y-8">
+        <Genres />
+        <TrendingSongsList />
+        <ArtistsAlbum />
+      </div>
     </>
   )
 }

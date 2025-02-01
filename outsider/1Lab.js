@@ -68,14 +68,54 @@
 // // x("jay")
 
 
-function x(arr) {
-  let sum = 0;
-  let median;
-  for (marks of arr) {
-    sum += marks;
-  }
-  median = sum / arr.length;
-  console.log(arr, median, sum)
-}
+// function x(arr) {
+//   let sum = 0;
+//   let median;
+//   for (marks of arr) {
+//     sum += marks;
+//   }
+//   median = sum / arr.length;
+//   console.log(arr, median, sum)
+// }
 
-x([56, 78, 89, 98, 45, 67])
+// x([56, 78, 89, 98, 45, 67])
+
+
+
+// class Demo {
+//     constructor() {
+//         console.log("hell")
+//   }
+  
+//   display(n) {
+//     console.log(n)
+//   }
+// }
+
+// class Dem extends Demo{
+//   constructor() {
+//     super();
+//   }
+//   display(n) {
+//     console.log(n)
+//   }
+// }
+
+// const demo = new Demo();
+// const dem = new Dem();
+
+// demo.display(6);
+// dem.display(5)
+
+
+
+
+
+// function swappingNum() {
+//   let n1 = prompt("n1");
+//   let n2 = prompt("n2");
+
+//   [n1, n2] = [n2, n1];
+//   console.log(n1, "   ", n2)
+// }
+// swappingNum();

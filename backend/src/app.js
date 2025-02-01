@@ -1,15 +1,13 @@
-import express from "express";
+import express from 'express';
+import songs from "./index.js"
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Backend")
+app.get('/api/Songs', (req, res) => {
+  res.send([songs]);
 })
 
 
-
-// const port = 3000;
-
-app.listen(4000, () => {
-  console.log(`listening on port http://localhost:${4000}`)
+app.listen(3000, () => {
+  console.log('server is started on http://localhost:3000/api/songs');
 })

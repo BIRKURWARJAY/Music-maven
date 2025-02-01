@@ -3,19 +3,35 @@ import { Link } from "react-router-dom";
 function SongHome({ song }) {
   return (
     <Link to={"/SongDetails"}>
-      <div className="song size-[10%] bg-black text-white">
-        <img
-          src={song.img}
-          alt={song.title}
-          className="bg-rose-300 w-full h-40 object-fill"
-        />
-        <div className="px-2 pb-2">
-          <h3 className="text-lg font-bold text-ellipsis my-1 text-balance">
-            {song.title}
-          </h3>
-          <p className="text-sm text-ellipsis">{song.artist}</p>
+      {song ? (
+        <div className="song bg-transparent text-white my-6 mr-4 w-[250px] rounded-lg">
+          <img
+            src={song.album.images[0].url}
+            alt={song.name}
+            className="bg-rose-300  rounded-md w-[250px]"
+          />
+          <div className=" pb-2 w-[250px]">
+            <h3 className="text-lg font-bold my-1 break-words">{song.name}</h3>
+            <p className="text-md text-slate-200 truncate">
+              {song.artists[0].name}
+            </p>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="song bg-transparent text-white my-6 mr-4 w-[250px] rounded-lg">
+          <img
+            src={""}
+            alt={""}
+            className="bg-rose-300  rounded-md w-[250px]"
+          />
+          <div className=" pb-2 w-[250px]">
+            <h3 className="text-lg font-bold my-1 break-words">{""}</h3>
+            <p className="text-md text-slate-200 truncate">
+              {""}
+            </p>
+          </div>
+        </div>
+      )}
     </Link>
   );
 }
