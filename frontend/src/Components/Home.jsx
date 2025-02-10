@@ -1,13 +1,16 @@
-import { Header, Genres, TrendingSongsList, ArtistsAlbum } from "./indexComp";
+import { lazy } from "react";
+
+const Genres = lazy(() => import("./Genres") );
+const TrendingSongsList = lazy(() => import("./TrendingSongsList") );
+const ArtistsAlbum = lazy(() => import("./ArtistsAlbum") );
 
 
 
-function Home() {
+export default function Home() {
 
 
   return (
-    <>
-      <Header />  
+    <> 
       <div className="flex flex-col gap-y-8">
         <Genres />
         <TrendingSongsList />
@@ -16,5 +19,3 @@ function Home() {
     </>
   )
 }
-
-export default Home;

@@ -1,4 +1,4 @@
-const History = () => {
+export default function History() {
   const { history } = useContext(HistoryContext);
   return (
     <div>
@@ -11,5 +11,3 @@ const History = () => {
     </div>
   );
 }
-
-export default History;

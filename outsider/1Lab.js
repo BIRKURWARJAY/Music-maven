@@ -119,3 +119,19 @@
 //   console.log(n1, "   ", n2)
 // }
 // swappingNum();
+
+
+// // speech API
+
+// async function speak(word) {
+//   const synth = window.speechSynthesis;
+
+
+//     const utterance = new SpeechSynthesisUtterance(word);
+//      synth.speak(utterance);
+// }
+
+// speak("hello");
+
+
+

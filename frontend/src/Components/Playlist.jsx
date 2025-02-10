@@ -1,7 +1,7 @@
-import SongPlaylist from "./SongPlaylist";
-import Aside from "./Aside";
+import { lazy } from "react";
+const SongPlaylist = lazy(() => import("./SongPlaylist") );
 
-function Playlist() {
+export default function Playlist() {
   return (
     <div className="w-full flex flex-col items-center bg-black text-white">
       {
@@ -10,10 +10,7 @@ function Playlist() {
         //     // <SongPlaylist key={song.id} song={song} />
         //   )
         // })
-        <Aside />
       }
     </div>
   );
 }
-
-export default Playlist;

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 
 
-function Login() {
+export default function Login() {
   return (
     <>
       <div className="xl:mx-[20%] bg-white my-16 max-md:my-0 border p-16 max-md:px-6 max-md:py-3 max-md:border-none">
@@ -103,4 +103,3 @@ function Login() {
   );
 }
 
-export default Login;

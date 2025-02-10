@@ -1,8 +1,10 @@
-import { useEffect } from "react";
-import { SearchBar, Aside } from "./indexComp.js";
+import { lazy, useEffect } from "react";
 import { Link } from "react-router-dom";
+const SearchBar = lazy(() => import("./SearchBar") );
+const Aside = lazy(() => import("./Aside") );
 
-function Header() {
+
+export default function Header() {
 
   const handleScroll = () => {
 
@@ -68,5 +70,3 @@ function Header() {
     </>
   );
 }
-
-export default Header;

@@ -1,4 +1,4 @@
-const CurrentSong = ({ currentSong }) => {
+export default function CurrentSong ({ currentSong }) {
   return (
     <>
       <div className="current-song p-2 bg-rose-400 text-white flex items-center justify-between">
@@ -19,5 +19,3 @@ const CurrentSong = ({ currentSong }) => {
     </>
   );
 }
-
-export default CurrentSong;

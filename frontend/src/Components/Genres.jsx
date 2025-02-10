@@ -1,4 +1,4 @@
-function Genres() {
+export default function Genres() {
   return (
     <ul className="flex gap-4 mt-28 mx-28">
       <li className=" text-white py-2 px-6 bg-white bg-opacity-5 hover:bg-opacity-15 rounded-lg font-semibold">
@@ -32,5 +32,3 @@ function Genres() {
   );
 }
 
-
-export default Genres;

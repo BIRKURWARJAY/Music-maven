@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 
-function SignUp() {
+export default function SignUp() {
   return (
     <>
       <div className="xl:mx-[20%] bg-white my-16 max-md:my-0 border p-16 max-md:px-6 max-md:py-3 max-md:border-none">
@@ -111,5 +111,3 @@ function SignUp() {
     </>
   );
 }
-
-export default SignUp;

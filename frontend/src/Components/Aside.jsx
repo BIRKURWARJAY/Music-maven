@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-function Aside() {
+export default function Aside() {
 
 
   return (
@@ -42,5 +42,3 @@ function Aside() {
     </>
   );
 }
-
-export default Aside;
