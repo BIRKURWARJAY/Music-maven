@@ -6,14 +6,14 @@ export default function SongHome({ song }) {
       {song ? (
         <div className="song bg-transparent text-white my-6 mr-4 w-[250px] rounded-lg">
           <img
-            src={song.album.images[0].url}
+            src={song.imageUrl}
             alt={song.name}
             className="bg-rose-300  rounded-md w-[250px]"
           />
           <div className=" pb-2 w-[250px]">
             <h3 className="text-lg font-bold my-1 break-words">{song.name}</h3>
             <p className="text-md text-slate-200 truncate">
-              {song.artists[0].name}
+              {song.artist?.join("  ,")}
             </p>
           </div>
         </div>
