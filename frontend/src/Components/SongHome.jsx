@@ -4,7 +4,7 @@ export default function SongHome({ song }) {
   return (
     <Link to={{ pathname: "/SongDetails" }} state={{ song }}>
       {song ? (
-        <div className="song bg-transparent text-white my-6 mr-4 w-[250px] rounded-lg">
+        <div className="song bg-transparent text-white mb-6 mr-4 w-[250px] rounded-lg">
           <img
             src={song.imageUrl}
             alt={song.name}

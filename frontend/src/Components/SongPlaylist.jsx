@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function SongPlaylist({ song }) {
+export default function SongPlaylist({ song, duration }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -58,13 +58,7 @@ export default function SongPlaylist({ song }) {
             <i className="fa-solid fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"></i>
           </div>
         ) : (
-          <div className="song-playlist-options flex items-center gap-x-4">
-            <input
-              type="checkbox"
-              className="size-4"
-            />
-            <i className="fa-solid fa-ellipsis-vertical text-xl"></i>
-          </div>
+          duration
         )}
       </div>
     </div>

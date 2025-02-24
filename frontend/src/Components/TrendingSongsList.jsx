@@ -1,6 +1,11 @@
 import { lazy, useEffect, useState } from "react";
-import axios from "axios";
+import fetchSongs from "../../features/AccessToken";
+import { fetchAccessToken } from "../../features/AccessToken";
 const SongHome = lazy(() => import("./SongHome"));
+
+
+fetchAccessToken();
+
 
 export default function TrendingSongsList() {
   const [trendingSongs, setTrendingSongs] = useState([]);
@@ -8,22 +13,26 @@ export default function TrendingSongsList() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("/api/Songs")
-      .then((res) => {
-        setTrendingSongs(res.data[0]?.trendingSongs || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
+    const loadSongs = async () => {
+      setLoading(true);
+      const accessToken = await fetchAccessToken();
+
+      if (accessToken) {
+        const songs = await fetchSongs(accessToken, "trending");
+        setTrendingSongs(songs);
+      } else {
         setError(true);
-        setLoading(false);
-      });
+      }
+
+      setLoading(false);
+    }
+
+    loadSongs();
   }, []);
 
   return (
     <div className="trending-songs-container flex flex-col bg-transparent my-4 ml-28 mx-16">
-      <h2 className="text-white text-4xl font-bold">Trending Songs</h2>
+      <h2 className="text-white text-4xl font-bold mb-6">Trending Songs</h2>
 
       <div className="songs-list flex flex-nowrap overflow-x-scroll">
         {loading ? (

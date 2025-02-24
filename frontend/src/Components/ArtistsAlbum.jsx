@@ -1,6 +1,9 @@
 import { lazy, useEffect, useState } from "react";
-import axios from "axios";
+import { fetchAccessToken } from "../../features/AccessToken";
+import fetchSongs from "../../features/AccessToken";
 const SongHome = lazy(() => import("./SongHome"));
+
+
 
 export default function ArtsitsAlbum() {
   const [albumSongs, setAlbumSongs] = useState([]);
@@ -8,22 +11,26 @@ export default function ArtsitsAlbum() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("/api/Songs")
-      .then((res) => {
-        setAlbumSongs(res.data[0].albumSongs);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
+    const loadSongs = async () => {
+      setLoading(true);
+      const accessToken = await fetchAccessToken();
+
+      if (accessToken) {
+        const songs = await fetchSongs(accessToken, "album");
+        setAlbumSongs(songs);
+      } else {
         setError(true);
-      });
+      }
+
+      setLoading(false);
+    }
+
+    loadSongs();
   }, []);
 
   return (
     <div className="artistsAlbum flex flex-col mx-16 ml-28 bg-transparent">
-      <h2 className="text-white text-4xl font-bold">Top Artists</h2>
+      <h2 className="text-white text-4xl font-bold mb-6">Top Artists</h2>
 
       <div className="songs-list flex flex-nowrap overflow-x-scroll">
         {loading ? (
