@@ -15,15 +15,15 @@ export default function TrendingSongsList() {
   useEffect(() => {
     const loadSongs = async () => {
       setLoading(true);
-      const accessToken = await fetchAccessToken();
 
-      if (accessToken) {
-        const songs = await fetchSongs(accessToken, "trending");
-        setTrendingSongs(songs);
-      } else {
+      const songs = await fetchSongs("trending");
+    
+      if (songs === "errAccess" ) {
         setError(true);
+      } else {
+        setTrendingSongs(songs);
       }
-
+    
       setLoading(false);
     }
 
@@ -46,7 +46,7 @@ export default function TrendingSongsList() {
         ) : error ? (
           // Error Message
           <div className="text-red-500 text-2xl">Error loading songs</div>
-        ) : trendingSongs.length > 0 ? (
+        ) : (
           // Display Songs
           trendingSongs.map((song) => (
             <SongHome
@@ -62,11 +62,6 @@ export default function TrendingSongsList() {
               }}
             />
           ))
-        ) : (
-          // No Songs Found
-          <div className="text-gray-400 text-xl">
-            No trending songs available
-          </div>
         )}
       </div>
     </div>
