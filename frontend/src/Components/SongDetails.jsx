@@ -16,6 +16,7 @@ export default function SongDetails() {
           <div className="flex justify-between mx-20 bg-transparent gap-x-20">
             <div className="w-1/3 p-6 justify-items-center items-center bg-transparent text-white gap-y-3 grid">
               <img
+                loading="lazy"
                 src={song.imageUrl}
                 alt=""
                 className="w-full"

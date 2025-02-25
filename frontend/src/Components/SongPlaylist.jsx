@@ -14,6 +14,7 @@ export default function SongPlaylist({ song, duration }) {
         <div className="flex gap-3 items-center relative">
           <div className="relative">
             <img
+              loading="lazy"
               src={song.imageUrl}
               alt={song.name}
               className={`size-16 rounded-md transition-all duration-300 ${isHovered ? "brightness-50" : ""}`}
