@@ -9,7 +9,7 @@ export default function SongHome({ song }) {
             loading="lazy"
             src={song.imageUrl}
             alt={song.name}
-            className="bg-rose-300  rounded-md w-[250px]"
+            className="rounded-md w-[250px]"
           />
           <div className=" pb-2 w-[250px]">
             <h3 className="text-lg font-bold my-1 break-words">{song.name}</h3>

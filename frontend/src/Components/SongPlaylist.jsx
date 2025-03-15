@@ -6,7 +6,7 @@ export default function SongPlaylist({ song, duration }) {
 
   return (
     <div
-      className="p-2 bg-transparent text-white rounded-lg mb-3"
+      className="p-2  text-white rounded-lg mb-3"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -27,20 +27,21 @@ export default function SongPlaylist({ song, duration }) {
             <h3 className="font-bold text-xl">{song.name}</h3>
             <p className="text-[#7F7676] font-semibold truncate">
               {song.artist?.map((artist, index) => (
-                <span>
-                  <Link
-                    key={artist}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.textDecoration = "underline";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.textDecoration = "none";
-                    }}
-                  >
-                    {artist}
-                  </Link>
-                  {index < song.artist.length - 2 ? "  ,  " : ""}
-                  {index === song.artist.length - 2 ? "  &  " : ""}
+                <span key={`${song.songId}-${index}`}>
+                  <span>
+                    <Link
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.textDecoration = "underline";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.textDecoration = "none";
+                      }}
+                    >
+                      {artist}
+                    </Link>
+                    {index < song.artist.length - 1 ? "  ,  " : ""}
+                    {index === song.artist.length - 2 ? "  &  " : ""}
+                  </span>
                 </span>
               ))}
             </p>

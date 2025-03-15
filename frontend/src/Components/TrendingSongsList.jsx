@@ -1,6 +1,5 @@
 import { lazy, useEffect, useState } from "react";
-import fetchSongs from "../../features/AccessToken";
-import { fetchAccessToken } from "../../features/AccessToken";
+import { fetchAccessToken, fetchSongs } from "../../features/AccessToken";
 const SongHome = lazy(() => import("./SongHome"));
 
 
@@ -12,11 +11,12 @@ export default function TrendingSongsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+
   useEffect(() => {
     const loadSongs = async () => {
       setLoading(true);
 
-      const songs = await fetchSongs("trending");
+      const songs = await fetchSongs("arijit singh");
     
       if (songs === "errAccess" ) {
         setError(true);

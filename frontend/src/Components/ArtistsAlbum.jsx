@@ -1,5 +1,5 @@
 import { lazy, useEffect, useState } from "react";
-import fetchSongs from "../../features/AccessToken";
+import {fetchSongs} from "../../features/AccessToken";
 const SongHome = lazy(() => import("./SongHome"));
 
 
@@ -13,7 +13,7 @@ export default function ArtsitsAlbum() {
     const loadSongs = async () => {
       setLoading(true);
 
-      const songs = await fetchSongs("honey singh");
+      const songs = await fetchSongs("Top artists");
 
       if (songs === "errAccess") {
         setError(true);

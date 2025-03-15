@@ -5,7 +5,7 @@ export default function Aside() {
 
   return (
     <>
-      <aside className="flex flex-col mt-20 gap-8 px-6 h-full justify-start items-center bg-transparent fixed top-0 left-0">
+      <aside className="flex flex-col mt-28 gap-8 px-6 h-full justify-start items-center bg-transparent fixed top-0 left-0">
         <NavLink
           to={"/"}
           className={({ isActive }) =>

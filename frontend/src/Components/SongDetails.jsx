@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { lazy } from "react";
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
+const CurrentSong = lazy(() => import("./CurrentSong"));
 
 export default function SongDetails() {
   const location = useLocation();
@@ -14,7 +15,7 @@ export default function SongDetails() {
       {song ? (
         <>
           <div className="flex justify-between mx-20 bg-transparent gap-x-20">
-            <div className="w-1/3 p-6 justify-items-center items-center bg-transparent text-white gap-y-3 grid">
+            <div className="w-1/4 px-6 py-4 justify-items-center items-center bg-transparent text-white gap-y-3 grid">
               <img
                 loading="lazy"
                 src={song.imageUrl}
@@ -35,9 +36,10 @@ export default function SongDetails() {
               </div>
             </div>
 
-            <div className="w-2/3 p-6">
+            <div className="w-3/4 px-6 py-4">
               <SongPlaylist song={song} duration = {songDuration} />
             </div>
+          <CurrentSong currentSong={song} />
           </div>
         </>
       ) : (

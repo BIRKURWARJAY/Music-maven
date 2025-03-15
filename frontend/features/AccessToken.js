@@ -17,7 +17,7 @@ let accessToken = await fetchAccessToken();
 
 
 //function that fetch the demanded songs
-const fetchSongs = async (query) => {
+export const fetchSongs = async (query) => {
   try {
     if (accessToken) {
       const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track&limit=10`, {
@@ -37,5 +37,3 @@ const fetchSongs = async (query) => {
     return err;
   }
 };
-
-export default fetchSongs;

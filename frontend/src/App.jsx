@@ -1,7 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import Header from "./Components/Header";
-import Footer from "./Components/Footer";
 
 function App() {
   const location = useLocation();
@@ -23,7 +22,6 @@ function App() {
       <Suspense fallback={<div>Loading...</div>}>
         <Outlet />
       </Suspense>
-      {/* {!isExemptedRoute && <Footer />} */}
     </>
   );
 }
