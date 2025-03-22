@@ -1,12 +1,16 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { connectDB } from './db/index.js';
+
+
+// connectDB();
 
 
 // Function to get the access token
 const getAccessToken = async () => {
-  const clientId = process.env.CLIENTID; // Replace with your client ID
-  const clientSecret = process.env.CLIENTSECRET; // Replace with your client secret
+  const clientId = process.env.CLIENTID; 
+  const clientSecret = process.env.CLIENTSECRET;
 
   const auth = 'Basic ' + Buffer.from(clientId + ':' + clientSecret).toString('base64');
 
@@ -22,6 +26,7 @@ const getAccessToken = async () => {
   });
 
   const data = await response.json();
+  
   return data.access_token; // Return the access token
 };
 

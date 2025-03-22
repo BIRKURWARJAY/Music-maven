@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function CurrentSong({ currentSong }) {
   return (
     <>
-      <div className="current-song p-2 bg-rose-400 rounded-lg text-white flex items-center justify-between bottom-0 fixed  w-3/4 content-center">
+      {/* <div className="current-song p-2 bg-rose-400 rounded-lg text-white flex items-center justify-between bottom-0 fixed  w-3/4 content-center">
         <div className="flex items-center gap-2">
           <img
             src={currentSong.imageUrl}
@@ -44,7 +44,7 @@ export default function CurrentSong({ currentSong }) {
           />
           <i className="fas fa-pause text-2xl"></i>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

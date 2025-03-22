@@ -1,10 +1,15 @@
 import { useLocation } from "react-router-dom";
 import { lazy } from "react";
+import { useParams } from "react-router-dom";
+import sendId from "../../features/songId";
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
 const CurrentSong = lazy(() => import("./CurrentSong"));
 
+
 export default function SongDetails() {
+  const { songId } = useParams();
+  sendId(songId);
   const location = useLocation();
   const { song } = location.state || {};
   const songMin = Math.floor(song.duration / 60000);
@@ -22,7 +27,7 @@ export default function SongDetails() {
                 alt=""
                 className="w-full"
               />
-              <h1 className="text-2xl font-bold ">{song.name}</h1>
+              <h1 className="text-2xl font-bold">{((song.name).length > 50 ? (<marquee behavior="alternate" scrollamount="5" scrolldelay="100">{song.name}</marquee>) : song.name)}</h1>
               <p>Music Maven</p>
               <p className="text-slate-300 font-semibold text-pretty">
                 {song.artist.join("  , ")}
