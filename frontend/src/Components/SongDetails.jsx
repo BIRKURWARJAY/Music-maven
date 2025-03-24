@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import { lazy } from "react";
-import { useParams } from "react-router-dom";
 import sendId from "../../features/songId";
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
@@ -8,13 +7,14 @@ const CurrentSong = lazy(() => import("./CurrentSong"));
 
 
 export default function SongDetails() {
-  const { songId } = useParams();
-  sendId(songId);
   const location = useLocation();
   const { song } = location.state || {};
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`
+  sendId(song.songId);
+
+  
   return (
     <div className="mt-28 mx-28">
       {song ? (
@@ -42,7 +42,7 @@ export default function SongDetails() {
             </div>
 
             <div className="w-3/4 px-6 py-4">
-              <SongPlaylist song={song} duration = {songDuration} />
+              <SongPlaylist song={song} duration={songDuration} />
             </div>
           <CurrentSong currentSong={song} />
           </div>

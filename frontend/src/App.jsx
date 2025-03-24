@@ -4,7 +4,7 @@ import Header from "./Components/Header";
 
 function App() {
   const location = useLocation();
-  const exemptedRoutes = ["/signup", "/login"];
+  const exemptedRoutes = ["/signup", "/login", "/premium"];
 
   // Determine if the current route is exempted
   const isExemptedRoute = exemptedRoutes.includes(location.pathname);

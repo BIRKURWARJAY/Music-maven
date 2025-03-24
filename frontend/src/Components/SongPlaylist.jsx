@@ -30,6 +30,7 @@ export default function SongPlaylist({ song, duration }) {
                 <span key={`${song.songId}-${index}`}>
                   <span>
                     <Link
+                      to={`/${artist.split(" ").join("")}`}
                       onMouseOver={(e) => {
                         e.currentTarget.style.textDecoration = "underline";
                       }}

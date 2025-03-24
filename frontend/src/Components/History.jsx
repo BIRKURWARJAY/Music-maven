@@ -1,5 +1,4 @@
 export default function History() {
-  const { history } = useContext(HistoryContext);
   return (
     <div>
       <h1>History</h1>

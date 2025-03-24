@@ -13,6 +13,7 @@ const LikedSongs = lazy(() => import("./LikedSongs"));
 const Premium = lazy(() => import("./Premium"));
 const Payment = lazy(() => import("./Payment"));
 const Profile = lazy(() => import("./Profile"));
+const SingerDetails = lazy(() => import("./SingerDetails"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="premium" element={<Premium />} />
       <Route path="payment" element={<Payment />} />
       <Route path="profile" element={<Profile />} />
+      <Route path=":name" element={<SingerDetails />} />
     </Route>
   )
 );

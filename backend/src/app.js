@@ -1,7 +1,10 @@
 import express from 'express';
 import accessToken from './index.js';
+import cors from 'cors';
+
 
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
@@ -19,9 +22,10 @@ app.get("/api/accessToken", async (req, res) => {
   }
 });
 
-app.post("/api/accessSongId", (req, res) => {
+app.post("/api/accessSongId", async (req, res) => {
   try {
-    const { songId } = req.body;
+    const { songId } = await req.body;
+    console.log(songId);
   } catch (error) {
     console.error("ERROR Receiving songId:::");   
   }
