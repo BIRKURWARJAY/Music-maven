@@ -18,7 +18,7 @@ export const fetchSongs = async (query, limit = 20) => {
   try {
     if (accessToken) {
       const response = await fetch(
-        `https://api.spotify.com/v1/search?q=${query}&type=track&limit=${limit}`,
+        `https://api.spotify.com/v1/search?q=${query}&type=track&limit=${limit}&offset=10`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`

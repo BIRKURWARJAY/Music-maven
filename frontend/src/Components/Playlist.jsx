@@ -1,15 +1,18 @@
-import { lazy } from "react";
+import { lazy, useState } from "react";
 const SongPlaylist = lazy(() => import("./SongPlaylist") );
 
 export default function Playlist() {
+
+  const [playlist, setPlaylist] = useState([]);
+
   return (
     <div className="w-full flex flex-col items-center bg-black text-white">
       {
-        // Playlist.map((song) => {
-        //   return (
-        //     // <SongPlaylist key={song.id} song={song} />
-        //   )
-        // })
+        playlist?.map((song) => {
+          return (
+            <SongPlaylist key={song.songId} song={song} duration={song.songDuration} />
+          )
+        })
       }
     </div>
   );

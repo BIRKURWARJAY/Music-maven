@@ -32,7 +32,7 @@ export default function Header() {
   return (
     <>
       <Aside />
-      <header className="flex fixed top-0 left-0 z-10 px-14 pl-1 w-full bg-transparent">
+      <header className="flex fixed top-0 left-0 h-24 z-10 overflow-visible px-14 pl-1 w-full bg-transparent">
         <nav className="flex justify-between  w-full">
           <div className="flex items-center gap-6 w-full pl-8">
             <i className="fa-solid fa-bars text-white text-2xl "></i>{" "}

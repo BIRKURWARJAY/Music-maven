@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Links } from "react-router-dom";
 import { fetchSongs } from "../../features/AccessToken";
 import { useEffect, useState, useCallback, useRef } from "react";
 
@@ -44,7 +44,7 @@ export default function SearchBar() {
 
   return (
     <>
-      <div className="w-[70%]">
+      <div className="w-[70%] relative">
         <input
           type="text"
           placeholder="Search for songs, artists, albums, podcasts"
@@ -53,20 +53,20 @@ export default function SearchBar() {
           onChange={(e) => setSearch(e.target.value)}
           ref={inputRef}
         />
-        {songs.length > 2 && isFocused ? (
-          <span className=" w-full">
-            {songs?.map((song, index) => (
-              <Link to={`/${song.id}`}>
-                <button
-                  key={index}
+        {songs.length > 0 && isFocused ? (
+          <ul className="w-full flex flex-col absolute top-12 left-0 bg-opacity-5 backdrop-blur-lg">
+            {songs?.map((song, index) => (              
+              <Link to={`/${song.id}`} key={index}>
+                <li
                   value={song}
-                  className="rounded-lg p-3 w-full bg-opacity-5 backdrop-blur-lg text-slate-400 outline-none hover:bg-opacity-15"
+                  className="rounded-lg p-3 w-full text-slate-400 outline-none 
+                bg-slate-950 hover:bg-opacity-15 hover:bg-white"
                 >
                   {song.name}
-                </button>
-              </Link>
+                </li>
+              </Link>    
             ))}
-          </span>
+          </ul>
         ) : (
           <span></span>
         )}
