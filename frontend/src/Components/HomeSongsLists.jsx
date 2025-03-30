@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SongHome from "./SongHome";
 import { fetchSongs, fetchAccessToken } from "../../features/AccessToken";
 
@@ -10,12 +10,14 @@ export default function HomeSongsList({displayName, songQuery}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [arrOfSongs, setArrOfSongs] = useState([]);
+  const songsCache = useRef(null);
   
   useEffect(() => {
     const loadSongs = async () => {
       setLoading(true);
 
       const songs = await fetchSongs(songQuery);
+      
     
       if (songs === "errAccess" ) {
         setError(true);
@@ -47,7 +49,7 @@ export default function HomeSongsList({displayName, songQuery}) {
           <div className="text-red-500 text-2xl">Error loading songs</div>
         ) : (
           // Display Songs
-          arrOfSongs.map((song) => (
+          arrOfSongs?.map((song) => (
             <SongHome
               key={song.id}
               song={{

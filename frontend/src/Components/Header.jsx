@@ -1,11 +1,14 @@
 import { lazy, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { isLoggedIn } from "./Home";
+
+
+
 const SearchBar = lazy(() => import("./SearchBar"));
 const Aside = lazy(() => import("./Aside"));
 
 export default function Header() {
 
-  let isLogged = false;
 
   const handleScroll = () => {
     let header = document.querySelector("header");
@@ -53,7 +56,7 @@ export default function Header() {
               <i className="fa-brands fa-chromecast text-2xl text-rose-500 size-12 rounded-lg text-center content-center hover:bg-white hover:bg-opacity-5"></i>
               <i className="fa-solid fa-ellipsis-vertical text-2xl text-rose-500 size-12 rounded-lg text-center content-center hover:bg-white hover:bg-opacity-5"></i>
             </div>
-            {!isLogged ? (
+            {!isLoggedIn ? (
               <div className="flex items-center gap-6">
               <Link to={"/login"}>
                 <button
@@ -75,7 +78,7 @@ export default function Header() {
               </div>
             ) : (
                 <div className="flex rounded-lg">
-                  <i class="fa-solid fa-user text-rose-500 ring-2 ring-rose-500 rounded-full text-2xl size-10  text-center content-center"></i>
+                  <i className="fa-solid fa-user text-rose-500 ring-2 ring-rose-500 rounded-full text-2xl size-10  text-center content-center"></i>
                 </div>
             )}
           </div>

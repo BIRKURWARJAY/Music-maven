@@ -1,7 +1,86 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 
 export default function SignUp() {
+
+  const checkboxRef = useRef(null);
+  const navigate = useNavigate();
+
+  
+
+
+
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: ""
+  })
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setUser((prev) => (
+      {...prev, [id]: value}
+    ))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+
+    // Check if any field is empty
+    if ([user.username, user.email, user.password].some((field) => {
+      return field.trim() === "";
+    })) {
+      setError("Please fill all the fields");
+      return;
+    }
+    
+    setError("");
+    
+    // Check if the checkbox is checked
+    if(!checkboxRef.current.checked) {
+      setError("Please agree to the Terms and Conditions");
+      return;
+    }
+
+
+    axios.post("/api/register", user)
+    .then((res) => {
+      if (res.status === 200) {
+        setUser({
+          username: "",
+          email: "",
+          password: ""
+        })
+        setError("");
+        checkboxRef.current.checked = false;
+        navigate("/login", { state: {message: "User created successfully, please login"}});
+      }
+    })
+    .catch((err) => {
+      if (err.response) {
+        // Server responded with a status other than 2xx
+        setError(err.response.data.message || "Server error, please try again later");
+      } else if (err.request) {
+        // Request was made but no response received
+        setError("Network error, please check your connection");
+      } else {
+        // Something else happened
+        setError("An unexpected error occurred, please try again");
+      }
+    });
+
+
+
+
+  }
+
   return (
     <>
       <div className="xl:mx-[20%] bg-white my-16 max-md:my-0 border p-16 max-md:px-6 max-md:py-3 max-md:border-none">
@@ -40,18 +119,20 @@ export default function SignUp() {
               <span className="mb-4 text-rose-600 pr-1">__</span>
             </p>
 
-            <form className="flex flex-col">
-              <label htmlFor="FullName">Full Name:</label>
+            <form className="flex flex-col" onSubmit={handleSubmit} >
+              <label htmlFor="username">User Name:</label>
               <input
                 type="text"
                 placeholder="Enter Name"
-                id="FullName"
+                id="username"
+                value={user.username}
                 className={`border-2 rounded p-2 mt-2 `}
+                onChange={handleChange}
                 required
               />
 
               <label
-                htmlFor="Email"
+                htmlFor="email"
                 className="mt-2"
               >
                 Email:
@@ -59,37 +140,45 @@ export default function SignUp() {
               <input
                 type="email"
                 placeholder="user@example.com"
-                id="Email"
+                id="email"
+                value={user.email}
                 className="border-2 rounded p-2 mt-2"
+                onChange={handleChange}
                 required
               />
 
               <label
-                htmlFor="Password"
+                htmlFor="password"
                 className="mt-2"
               >
                 Password:
               </label>
               <input
                 type="password"
-                id="Password"
+                id="password"
+                value={user.password}
                 placeholder="**********"
                 className="border-2 rounded p-2 mt-2"
+                onChange={handleChange}
                 autoComplete="on"
+                minLength={8}
                 required
               />
+
+              {error ? (<p className="text-red-600 mt-2 font-semibold">{ error }</p>) : ("")}
 
               <button
                 type="submit"
                 className="text-center bg-orange-500 w-full py-2 rounded my-6"
               >
-                Log in
+                Sign up
               </button>
             </form>
 
             <div className="flex">
               <input
                 type="checkbox"
+                ref={checkboxRef}
                 required
                 className="cursor-pointer"
               />

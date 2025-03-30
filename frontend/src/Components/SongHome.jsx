@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function SongHome({ song }) {
 
   return (
-    <Link to={{ pathname: `/${song.songId}` }} state={{ song }}>
+    <Link to={{ pathname: `song/${song.songId}` }} state={{ song }}>
       {song ? (
         <div className="song bg-transparent text-white mb-6 mr-4 w-[250px] rounded-lg">
           <img

@@ -1,10 +1,71 @@
 import { Link } from "react-router-dom";
-
-
+import { useLocation } from "react-router-dom";
+import { UserCreatedPopup } from "./UserCreatedPopup";
+import axios from "axios";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const location = useLocation();
+  const checkboxRef = useRef(null);
+  const navigate = useNavigate();
+  const message = location.state?.message || null;
+  const [userDetails, setUserDetails] = useState({
+    email: "",
+    password: ""
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setUserDetails((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Check if any field is empty
+    if (
+      [userDetails.email, userDetails.password].some((field) => {
+        return field.trim() === "";
+      })
+    ) {
+      setError("Please fill all the fields");
+      return;
+    }
+
+    setError("");
+
+    // Check if the checkbox is checked
+    if (!checkboxRef.current.checked) {
+      setError("Please agree to the Terms and Conditions");
+      return;
+    }
+
+    axios
+      .post("/api/login", userDetails)
+      .then((res) => {
+        if (res.status === 200) {
+          setUserDetails({
+            email: "",
+            password: ""
+          });
+          navigate("/home", { state: { success: res.data.success } });
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          setError(err.response.data.message);
+        } else {
+          setError("An error occurred. Please try again later.");
+        }
+      });
+  };
+
   return (
     <>
+      {message && <UserCreatedPopup message={message} />}
+
       <div className="xl:mx-[20%] bg-white my-16 max-md:my-0 border p-16 max-md:px-6 max-md:py-3 max-md:border-none">
         <div className="flex divide-x-2 max-md:divide-x-0">
           <div className="flex-1 pr-16 max-md:hidden">
@@ -40,9 +101,12 @@ export default function Login() {
               your email <span className="mb-4 text-rose-600 pr-1">__</span>
             </p>
 
-            <form className="flex flex-col">
+            <form
+              className="flex flex-col"
+              onSubmit={handleSubmit}
+            >
               <label
-                htmlFor="Email"
+                htmlFor="email"
                 className="mt-2"
               >
                 Email:
@@ -50,25 +114,33 @@ export default function Login() {
               <input
                 type="email"
                 placeholder="user@example.com"
-                id="Email"
+                id="email"
+                onChange={handleChange}
                 className="border-2 rounded p-2 mt-2"
                 required
               />
 
               <label
-                htmlFor="Password"
+                htmlFor="password"
                 className="mt-2"
               >
                 Password:
               </label>
               <input
                 type="password"
-                id="Password"
+                id="password"
+                onChange={handleChange}
                 placeholder="********"
                 className="border-2 rounded p-2 mt-2"
                 autoComplete="on"
                 required
               />
+
+              {error ? (
+                <p className="text-red-600 mt-2 font-semibold">{error}</p>
+              ) : (
+                ""
+              )}
 
               <button
                 type="submit"
@@ -82,6 +154,7 @@ export default function Login() {
               <input
                 type="checkbox"
                 required
+                ref={checkboxRef}
                 className="cursor-pointer"
               />
               <p className="mx-2">I agreed to the Terms and Conditions</p>
@@ -102,4 +175,3 @@ export default function Login() {
     </>
   );
 }
-

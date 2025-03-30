@@ -1,4 +1,4 @@
-import { Link, Links } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { fetchSongs } from "../../features/AccessToken";
 import { useEffect, useState, useCallback, useRef } from "react";
 
@@ -9,16 +9,18 @@ export default function SearchBar() {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef();
 
+
+
+
+
   // Debounced search function
   const debouncedSearch = useCallback(
     async (searchTerm) => {
       if (searchTerm?.length > 3 && searchTerm !== prevSearch) {
         let songs = await fetchSongs(searchTerm, 3);
         setSongs(songs);
-        console.log(songs);
-
-        console.log("Search term:", searchTerm);
-        console.log("Found songs:", songs);
+        console.log("songs", songs);
+        
         setPrevSearch(searchTerm);
       } else if (searchTerm.length < 4){
         setSongs([]);
@@ -31,7 +33,9 @@ export default function SearchBar() {
     const inputElement = inputRef.current;
     if (inputElement) {
       inputElement.addEventListener("focus", () => setIsFocused(true));
-      inputElement.addEventListener("blur", () => setIsFocused(false));
+      inputElement.addEventListener("blur", () => setTimeout(() => {
+        setIsFocused(false);
+      }, 400));
     }
 
     const timeoutId = setTimeout(() => {
@@ -54,11 +58,22 @@ export default function SearchBar() {
           ref={inputRef}
         />
         {songs.length > 0 && isFocused ? (
-          <ul className="w-full flex flex-col absolute top-12 left-0 bg-opacity-5 backdrop-blur-lg">
-            {songs?.map((song, index) => (              
-              <Link to={`/${song.id}`} key={index}>
+          <ul className="w-full flex flex-col absolute z-40 top-12 left-0 bg-opacity-5 backdrop-blur-lg">
+            {songs?.map((song) => (              
+              <Link to={`song/${song.id}`} key={song.id} state={{
+                song: {
+                  songId: song?.id,
+                  imageUrl: song.album?.images[0]?.url,
+                  name: song?.name,
+                  artist: song?.artists?.map((artist) => artist.name),
+                  release: song.album?.release_date,
+                  duration: song?.duration_ms,
+                  artistId: song.artists?.map((artist) => artist.id)
+                }
+                }}                
+              >
                 <li
-                  value={song}
+                 
                   className="rounded-lg p-3 w-full text-slate-400 outline-none 
                 bg-slate-950 hover:bg-opacity-15 hover:bg-white"
                 >
@@ -68,7 +83,7 @@ export default function SearchBar() {
             ))}
           </ul>
         ) : (
-          <span></span>
+          null
         )}
       </div>
     </>

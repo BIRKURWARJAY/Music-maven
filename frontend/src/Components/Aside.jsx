@@ -1,4 +1,6 @@
 import { NavLink } from "react-router-dom";
+import { isLoggedIn } from "./Home";
+
 
 export default function Aside() {
 
@@ -29,15 +31,19 @@ export default function Aside() {
           }
           title="Playlists"
         ></NavLink>
-        <hr className="w-full" />
-        <NavLink
-          to={"/signup"}
-          title="Sign in"
-          className={({ isActive }) =>
-            `fa-regular fa-circle-user text-transparent text-white text-2xl size-12 rounded-lg hover:bg-white hover:bg-opacity-5 text-center content-center 
-            ${isActive ? "bg-white bg-opacity-5" : ""}`
-          }
-        ></NavLink>
+        {!isLoggedIn && (
+          <>
+            <hr className="w-full" />
+            <NavLink
+              to={"/signup"}
+              title="Sign in"
+              className={({ isActive }) =>
+                `fa-regular fa-circle-user text-transparent text-white text-2xl size-12 rounded-lg hover:bg-white hover:bg-opacity-5 text-center content-center 
+                ${isActive ? "bg-white bg-opacity-5" : ""}`
+              }
+            ></NavLink>
+          </>
+        )}
       </aside>
     </>
   );

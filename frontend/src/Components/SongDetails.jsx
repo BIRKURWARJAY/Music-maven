@@ -8,12 +8,11 @@ const CurrentSong = lazy(() => import("./CurrentSong"));
 
 export default function SongDetails() {
   const location = useLocation();
-  const { song } = location.state || {};
+  const { song } = location?.state || {};
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`
-  sendId(song.songId);
-
+  sendId(song.songId);  
   
   return (
     <div className="mt-28 mx-28">
@@ -30,7 +29,7 @@ export default function SongDetails() {
               <h1 className="text-2xl font-bold">{((song.name).length > 50 ? (<marquee behavior="alternate" scrollamount="5" scrolldelay="100">{song.name}</marquee>) : song.name)}</h1>
               <p>Music Maven</p>
               <p className="text-slate-300 font-semibold text-pretty">
-                {song.artist.join("  , ")}
+                {song.artist?.join("  , ")}
                 <i className="fa-solid fa-circle mx-2 text-[4px]"></i>
                 {songDuration}
               </p>

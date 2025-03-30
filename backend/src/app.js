@@ -1,6 +1,7 @@
 import express from 'express';
 import accessToken from './index.js';
 import cors from 'cors';
+import { registerUser, loginUser } from './controllers/user.controller.js';
 
 
 const app = express();
@@ -9,6 +10,9 @@ const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 
+
+
+//Sending accessToken on api to get fetch from frontend 
 app.get("/api/accessToken", async (req, res) => {
   try {
     const newAccessToken = await accessToken;
@@ -22,6 +26,9 @@ app.get("/api/accessToken", async (req, res) => {
   }
 });
 
+
+
+//Getting SongId from frontend to play a song from songId
 app.post("/api/accessSongId", async (req, res) => {
   try {
     const { songId } = await req.body;
@@ -31,12 +38,23 @@ app.post("/api/accessSongId", async (req, res) => {
   }
 })
 
+
+//Getting user data from frontend for signup
+app.post("/api/register", registerUser)
+
+
+
+//Getting user data from frontend for login
+app.post("/api/login", loginUser)
+
+
+
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 // Handle graceful shutdown
-process.on('SIGTERM', () => {
+process.on('SIGTERM' || "EADDRINUSE", () => {
   console.info('SIGTERM signal received.');
   server.close(() => {
     console.log('Server closed.');
@@ -44,7 +62,7 @@ process.on('SIGTERM', () => {
   });
 });
 
-process.on('SIGINT', () => {
+process.on('SIGINT' || "EADDRINUSE", () => {
   console.info('SIGINT signal received.');
   server.close(() => {
     console.log('Server closed.');

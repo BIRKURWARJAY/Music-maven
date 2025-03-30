@@ -6,7 +6,7 @@ dotenv.config();
 import { connectDB } from './db/index.js';
 
 
-// connectDB();
+connectDB();
 
 
 // Function to get the access token
@@ -32,6 +32,8 @@ const getAccessToken = async () => {
   return data.access_token; // Return the access token
 };
 
-let accessToken = await getAccessToken();
+let accessToken = getAccessToken();
+
+
 
 export default accessToken;

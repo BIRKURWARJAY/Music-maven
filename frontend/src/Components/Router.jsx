@@ -11,7 +11,6 @@ const SongDetails = lazy(() => import("./SongDetails"));
 const History = lazy(() => import("./History"));
 const LikedSongs = lazy(() => import("./LikedSongs"));
 const Premium = lazy(() => import("./Premium"));
-const Payment = lazy(() => import("./Payment"));
 const Profile = lazy(() => import("./Profile"));
 const SingerDetails = lazy(() => import("./SingerDetails"));
 
@@ -22,14 +21,13 @@ const router = createBrowserRouter(
       <Route path='login' element={<Login />} />
       <Route path='signup' element={<SignUp />} />
       <Route path='home' element={<Home />} />
-      <Route path='playlist' element={<Playlist />} />
-      <Route path=":songId" element={<SongDetails />} />
+      <Route path="song/:songId" element={<SongDetails />} />
+      <Route path="playlist" element={<Playlist />} />
       <Route path="history" element={<History />} />
       <Route path="liked-songs" element={<LikedSongs />} />
       <Route path="premium" element={<Premium />} />
-      <Route path="payment" element={<Payment />} />
       <Route path="profile" element={<Profile />} />
-      <Route path=":name" element={<SingerDetails />} />
+      <Route path="artist:name" element={<SingerDetails />} />
     </Route>
   )
 );
