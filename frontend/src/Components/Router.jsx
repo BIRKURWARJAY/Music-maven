@@ -13,6 +13,8 @@ const LikedSongs = lazy(() => import("./LikedSongs"));
 const Premium = lazy(() => import("./Premium"));
 const Profile = lazy(() => import("./Profile"));
 const SingerDetails = lazy(() => import("./SingerDetails"));
+const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,12 +24,12 @@ const router = createBrowserRouter(
       <Route path='signup' element={<SignUp />} />
       <Route path='home' element={<Home />} />
       <Route path="song/:songId" element={<SongDetails />} />
-      <Route path="playlist" element={<Playlist />} />
+      <Route path="playlist" element={<ProtectedRoute Children={ Playlist } /> } />
       <Route path="history" element={<History />} />
       <Route path="liked-songs" element={<LikedSongs />} />
       <Route path="premium" element={<Premium />} />
       <Route path="profile" element={<Profile />} />
-      <Route path="artist:name" element={<SingerDetails />} />
+      <Route path="artist/:name" element={<SingerDetails />} />
     </Route>
   )
 );

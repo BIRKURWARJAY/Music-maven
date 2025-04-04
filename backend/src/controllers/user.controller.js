@@ -1,6 +1,13 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
-import { User, isPasswordCorrect } from "../models/user.model.js"
+import { User } from "../models/user.model.js"
 
+
+const cookieOptions = {
+  expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+  httpOnly: true,
+  secure: true,
+  sameSite: "strict"
+}
 
 const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -33,9 +40,13 @@ const registerUser = asyncHandler(async (req, res) => {
       });
     } else {
       console.log("User created successfully");
-      res.status(200).json({
-        message: "user created successfully"
-      })
+      res
+      .status(200)
+      .cookie("user", createdUser._id, cookieOptions)  
+      .json({
+        message: "user created successfully",
+        success: true
+      })      
     }
   }
 
@@ -54,12 +65,14 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const existedUser = await User.findOne({ email });
 
-  const isPasswordCorrect = await existedUser?.isPasswordCorrect(password);
 
   if (existedUser) {
-    if (isPasswordCorrect) {
+    if (existedUser.isPasswordCorrect(password)) {
       console.log("User logged in successfully");
-      res.status(200).json({
+      res
+      .status(200)
+      .cookie("user", existedUser._id, cookieOptions)
+      .json({
         message: "User logged in successfully", 
         success: true
       })
@@ -76,6 +89,21 @@ const loginUser = asyncHandler(async (req, res) => {
     })
   }
 
+})
+
+
+const logoutUser = asyncHandler(async (req, res) => {
+  res
+  .status(200)
+  .cookie("user", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+    secure: true
+  })
+  .json({
+    message: "User logged out successfully",
+    success: true
+  })
 })
 
 

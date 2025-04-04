@@ -1,13 +1,14 @@
 import express from 'express';
 import accessToken from './index.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { registerUser, loginUser } from './controllers/user.controller.js';
 
 
 const app = express();
 app.use(cors());
 const PORT = process.env.PORT || 8000;
-
+app.use(cookieParser());
 app.use(express.json());
 
 
@@ -16,10 +17,6 @@ app.use(express.json());
 app.get("/api/accessToken", async (req, res) => {
   try {
     const newAccessToken = await accessToken;
-    setTimeout(async () => {
-      newAccessToken = await accessToken;
-      return newAccessToken;
-    }, 3600000);
     res.json({ accessToken: newAccessToken });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch access token" });

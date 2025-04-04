@@ -32,8 +32,12 @@ const getAccessToken = async () => {
   return data.access_token; // Return the access token
 };
 
-let accessToken = getAccessToken();
+let accessToken = await getAccessToken();
 
+
+setInterval(async () => {
+  accessToken = await getAccessToken(); 
+}, 3600000); // Refresh the token every hour
 
 
 export default accessToken;

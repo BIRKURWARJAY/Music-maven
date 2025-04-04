@@ -30,7 +30,8 @@ export default function SongPlaylist({ song, duration }) {
                 <span key={`${song.songId}-${index}`}>
                   <span>
                     <Link
-                      to={`/${artist.split(" ").join("")}`}
+                      to={`/artist/${artist.split(" ").join("")}`}
+                      state={{ artist, artistId: song.artistId[index] }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.textDecoration = "underline";
                       }}
@@ -50,15 +51,17 @@ export default function SongPlaylist({ song, duration }) {
         </div>
         {isHovered ? (
           <div className="flex gap-2 items-center">
-            <i className="fa-regular fa-thumbs-up rotate-180 text-2xl text-white px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-5"></i>
             <i
               className={`fa-regular fa-thumbs-up text-2xl text-white px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-5 `}
+              title="Like the Song"
             ></i>
             <input
               type="checkbox"
               className=" size-4 "
+              title="Add to Playlist"
             />
-            <i className="fa-solid fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"></i>
+            <i className="fa-solid fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"
+            title="Details"></i>
           </div>
         ) : (
           duration

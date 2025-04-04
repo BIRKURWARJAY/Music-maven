@@ -34,9 +34,9 @@ export default function SongDetails() {
                 {songDuration}
               </p>
               <div className="flex gap-8 items-center">
-                <i className="fa-regular fa-square-plus px-3 py-2 rounded-full bg-white bg-opacity-5 text-xl"></i>
+                <i className="fa-regular fa-square-plus px-3 py-2 rounded-full bg-white bg-opacity-5 text-xl" title="Add all to Playlist"></i>
                 <i className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"></i>
-                <i className="fa-solid fa-ellipsis-vertical px-5 py-2 rounded-full bg-white bg-opacity-5 text-xl"></i>
+                <i className="fa-solid fa-ellipsis-vertical px-5 py-2 rounded-full bg-white bg-opacity-5 text-xl" title="Details"></i>
               </div>
             </div>
 
