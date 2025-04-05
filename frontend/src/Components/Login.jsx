@@ -2,14 +2,34 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { UserCreatedPopup } from "./UserCreatedPopup";
 import axios from "axios";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+//function to redirect to Spotify authorization page
+const redirectToSpotifyAuth = () => {
+  window.location = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}`;
+};
+
+const CLIENT_ID = `${import.meta.env.VITE_CLIENT_ID}`;
+const REDIRECT_URI = "http://localhost:5173/callback";
+const SCOPES = [
+  "streaming",
+  "user-read-email",
+  "user-read-private",
+  "user-modify-playback-state",
+  "user-read-playback-state"
+].join("%20");
 
 export default function Login() {
   const location = useLocation();
-  const checkboxRef = useRef(null);
   const navigate = useNavigate();
   const message = location.state?.message || null;
+
+
+
+ 
+
+
   const [userDetails, setUserDetails] = useState({
     email: "",
     password: ""
@@ -36,11 +56,6 @@ export default function Login() {
 
     setError("");
 
-    // Check if the checkbox is checked
-    if (!checkboxRef.current.checked) {
-      setError("Please agree to the Terms and Conditions");
-      return;
-    }
 
     axios
       .post("/api/login", userDetails)
@@ -50,7 +65,7 @@ export default function Login() {
             email: "",
             password: ""
           });
-          navigate("/home", { state: { success: res.data.success } });
+          navigate("/", { state: { success: res.data.success } });
         }
       })
       .catch((err) => {
@@ -60,6 +75,8 @@ export default function Login() {
           setError("An error occurred. Please try again later.");
         }
       });
+    
+    redirectToSpotifyAuth();
   };
 
   return (
@@ -149,16 +166,6 @@ export default function Login() {
                 Log in
               </button>
             </form>
-
-            <div className="flex">
-              <input
-                type="checkbox"
-                required
-                ref={checkboxRef}
-                className="cursor-pointer"
-              />
-              <p className="mx-2">I agreed to the Terms and Conditions</p>
-            </div>
 
             <p className="text-center mt-3">
               Don't have an account?{" "}

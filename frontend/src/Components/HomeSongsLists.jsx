@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import SongHome from "./SongHome";
 import { fetchSongs, fetchAccessToken } from "../../features/AccessToken";
 
@@ -10,7 +10,6 @@ export default function HomeSongsList({displayName, songQuery}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [arrOfSongs, setArrOfSongs] = useState([]);
-  const songsCache = useRef(null);
   
   useEffect(() => {
     const loadSongs = async () => {

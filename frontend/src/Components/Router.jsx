@@ -14,12 +14,14 @@ const Premium = lazy(() => import("./Premium"));
 const Profile = lazy(() => import("./Profile"));
 const SingerDetails = lazy(() => import("./SingerDetails"));
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
+const Callback = lazy(() => import("./Callback"));
 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path="" element={<Home />} />
+      <Route path="callback" element={<Callback />} />
       <Route path='login' element={<Login />} />
       <Route path='signup' element={<SignUp />} />
       <Route path='home' element={<Home />} />

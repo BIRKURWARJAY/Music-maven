@@ -58,10 +58,6 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  if([email, password].some((field) => field?.trim() === "")) {
-    return console.error("All fields are required");
-  }
-
 
   const existedUser = await User.findOne({ email });
 
@@ -95,11 +91,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const logoutUser = asyncHandler(async (req, res) => {
   res
   .status(200)
-  .cookie("user", null, {
-    expires: new Date(Date.now()),
-    httpOnly: true,
-    secure: true
-  })
+  .clearCookie("user")
   .json({
     message: "User logged out successfully",
     success: true
@@ -107,4 +99,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 })
 
 
-export { registerUser, loginUser };
+const updateUser = asyncHandler(async (req, res) => {
+
+})
+
+export { registerUser, loginUser, logoutUser, updateUser };

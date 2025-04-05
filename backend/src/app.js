@@ -2,7 +2,7 @@ import express from 'express';
 import accessToken from './index.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { registerUser, loginUser } from './controllers/user.controller.js';
+import { registerUser, loginUser, logoutUser, updateUser } from './controllers/user.controller.js';
 
 
 const app = express();
@@ -43,6 +43,10 @@ app.post("/api/register", registerUser)
 
 //Getting user data from frontend for login
 app.post("/api/login", loginUser)
+
+
+//Logging out user
+app.get("/api/logout", logoutUser)
 
 
 

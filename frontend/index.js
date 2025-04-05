@@ -1,42 +1,38 @@
-import { fetchAccessToken } from "./features/AccessToken";
-
-const accessToken = await fetchAccessToken();
 
 
 
 
+const token = document.cookie.split(";").find(cookie => cookie.trim().startsWith("token="))?.split("=")[1];
 
-window.onSpotifyWebPlaybackSDKReady = () => {
-  const player = new Spotify.Player({
-    name: 'Web Playback SDK Quick Start Player',
-    getOAuthToken: cb => { return cb(accessToken); },
-    volume: 0.5
-  })
 
+function initializeSpotifyPlayer() {
+  window.onSpotifyWebPlaybackSDKReady = () => {
+    const player = new Spotify.Player({
+      name: 'My Web Player',
+      getOAuthToken: cb => { cb(token); },
+      volume: 0.5
+    });
   
+    // Connect to the player
+    player.connect()
+      .then(res => console.log("Player is Connected Successfully:::"))
+      .catch(err => console.error("Player Connection error:::" , err))
+  
+    // Error and state handling
+    player.addListener('ready', ({ device_id }) => {
+      console.log('Ready with Device ID', device_id);
+    });
+  };
+  
+}
 
-  //listeners for the functioning and error while initialization of the player
 
-  player.addListener('ready', ({ device_id }) => {
-    console.log('Ready with Device ID', device_id);
-  });
-
-  player.addListener('not_ready', ({ device_id }) => {
-    console.log('Device ID has gone offline', device_id);
-  });
-
-
-  player.addListener('initialization_error', ({ message }) => {
-    console.error(message);
-  });
-
-  player.addListener('authentication_error', ({ message }) => {
-    console.error(message);
-  });
-
-  player.addListener('account_error', ({ message }) => {
-    console.error(message);
-  });
-
-  player.connect();
-};
+// Ensure the Spotify Web Playback SDK script is loaded before initializing
+if (typeof Spotify === 'undefined') {
+  const script = document.createElement('script');
+  script.src = 'https://sdk.scdn.co/spotify-player.js';
+  script.onload = initializeSpotifyPlayer;
+  document.head.appendChild(script);
+} else {
+  initializeSpotifyPlayer();  
+}

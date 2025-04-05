@@ -11,7 +11,7 @@ export const fetchAccessToken = async () => {
   }
 };
 
-let accessToken = await fetchAccessToken();
+export const accessToken = await fetchAccessToken();
 
 
 //function that fetch the demanded songs
@@ -36,6 +36,6 @@ export const fetchSongs = async (query, limit = 20) => {
 
   } catch (error) {
     console.error("Error fetching songs", error);
-    return err;
+    return error;
   }
 };
