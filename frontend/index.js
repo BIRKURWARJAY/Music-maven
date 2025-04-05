@@ -34,5 +34,5 @@ if (typeof Spotify === 'undefined') {
   script.onload = initializeSpotifyPlayer;
   document.head.appendChild(script);
 } else {
-  initializeSpotifyPlayer();  
+  initializeSpotifyPlayer();
 }
