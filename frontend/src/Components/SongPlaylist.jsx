@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function SongPlaylist({ song, duration }) {
+export default function SongPlaylist({ song }) {
   const [isHovered, setIsHovered] = useState(false);
+  const songMin = Math.floor(song.duration / 60000);
+  const songSec = ((song.duration % 60000) / 1000).toFixed(0);
+  const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`
+
+
+
 
   return (
     <div
@@ -64,7 +70,7 @@ export default function SongPlaylist({ song, duration }) {
             title="Details"></i>
           </div>
         ) : (
-          duration
+          songDuration
         )}
       </div>
     </div>

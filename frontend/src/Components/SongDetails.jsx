@@ -1,19 +1,25 @@
 import { useLocation } from "react-router-dom";
-import { lazy } from "react";
+import { lazy, useState } from "react";
 import sendId from "../../features/songId";
+import { playSong } from "../../index";
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
 const CurrentSong = lazy(() => import("./CurrentSong"));
-
 
 export default function SongDetails() {
   const location = useLocation();
   const { song } = location?.state || {};
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
-  const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`
-  sendId(song.songId);  
-  
+  const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
+  const [playState, setPlayState] = useState(false);
+  sendId(song.songId);
+
+  const handleSong = (songId) => {
+    playSong(songId);
+    setPlayState((prev) => !prev)
+  };
+
   return (
     <div className="mt-28 mx-28">
       {song ? (
@@ -26,7 +32,19 @@ export default function SongDetails() {
                 alt=""
                 className="w-full"
               />
-              <h1 className="text-2xl font-bold">{((song.name).length > 50 ? (<marquee behavior="alternate" scrollamount="5" scrolldelay="100">{song.name}</marquee>) : song.name)}</h1>
+              <h1 className="text-2xl font-bold">
+                {song.name.length > 50 ? (
+                  <marquee
+                    behavior="alternate"
+                    scrollamount="5"
+                    scrolldelay="100"
+                  >
+                    {song.name}
+                  </marquee>
+                ) : (
+                  song.name
+                )}
+              </h1>
               <p>Music Maven</p>
               <p className="text-slate-300 font-semibold text-pretty">
                 {song.artist?.join("  , ")}
@@ -34,16 +52,35 @@ export default function SongDetails() {
                 {songDuration}
               </p>
               <div className="flex gap-8 items-center">
-                <i className="fa-regular fa-square-plus px-3 py-2 rounded-full bg-white bg-opacity-5 text-xl" title="Add all to Playlist"></i>
-                <i className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"></i>
-                <i className="fa-solid fa-ellipsis-vertical px-5 py-2 rounded-full bg-white bg-opacity-5 text-xl" title="Details"></i>
+                <i
+                  className="fa-regular fa-square-plus px-3 py-2 rounded-full bg-white bg-opacity-5 text-xl"
+                  title="Add all to Playlist"
+                ></i>
+                {!playState ? (
+                  <i
+                    className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
+                    onClick={() => handleSong(song.songId)}
+                  ></i>
+                ) : (
+                  <i
+                    className="fa-solid fa-pause px-8 py-6 bg-white rounded-full text-black text-2xl"
+                    onClick={() => handleSong(song.songId)}
+                  ></i>
+                )}
+                <i
+                  className="fa-solid fa-ellipsis-vertical px-5 py-2 rounded-full bg-white bg-opacity-5 text-xl"
+                  title="Details"
+                ></i>
               </div>
             </div>
 
             <div className="w-3/4 px-6 py-4">
-              <SongPlaylist song={song} duration={songDuration} />
+              <SongPlaylist
+                song={song}
+                duration={songDuration}
+              />
             </div>
-          <CurrentSong currentSong={song} />
+            <CurrentSong currentSong={song} />
           </div>
         </>
       ) : (

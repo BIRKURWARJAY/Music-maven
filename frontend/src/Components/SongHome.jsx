@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function SongHome({ song }) {
 
+
+
   return (
     <Link to={{ pathname: `/song/${song.songId}` }} state={{ song }}>
       {song ? (

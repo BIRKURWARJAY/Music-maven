@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
-import SongHome from "./SongHome";
-import { fetchSongs, fetchAccessToken } from "../../features/AccessToken";
+import AlbumHome from "./AlbumHome"
+import { fetchAlbum } from "../../features/AccessToken";
 
-fetchAccessToken();
 
-export default function HomeSongsList({ displayName, songQuery }) {
+
+export default function HomeArtists({ displayName, songQuery }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [arrOfSongs, setArrOfSongs] = useState([]);
+  const [arrOfAlbums, setArrOfAlbums] = useState([]);
 
   useEffect(() => {
     const loadSongs = async () => {
       setLoading(true);
 
-      const songs = await fetchSongs(songQuery);
+      const albums = await fetchAlbum(songQuery);
 
-      if (songs === "errAccess") {
+      if (albums === "errAccess") {
         setError(true);
       } else {
-        setArrOfSongs(songs);
+        setArrOfAlbums(albums);
       }
 
       setLoading(false);
@@ -43,19 +43,20 @@ export default function HomeSongsList({ displayName, songQuery }) {
         ) : error ? (
           // Error Message
           <div className="text-red-500 text-2xl">Error loading songs</div>
-        ) : arrOfSongs.length >= 1 ? (
+        ) : arrOfAlbums.length >= 1 ? (
           // Display Songs
-          arrOfSongs?.map((song) => (
-            <SongHome
-              key={song.id}
-              song={{
-                songId: song?.id,
-                imageUrl: song.album?.images[0]?.url,
-                name: song?.name,
-                artist: song?.artists?.map((artist) => artist.name),
-                release: song.album?.release_date,
-                duration: song?.duration_ms,
-                artistId: song.artists?.map((artist) => artist.id)
+          arrOfAlbums?.map((album) => (
+            <AlbumHome
+              key={album.id}
+              album={{
+                albumId: album?.id,
+                imageUrl: album?.images[0]?.url,
+                name: album?.name,
+                artist: album?.artists?.map((artist) => artist.name),
+                release: album?.release_date,
+                duration: album?.duration_ms,
+                artistId: album.artists?.map((artist) => artist.id),
+                totalTracks: album?.total_tracks
               }}
             />
           ))

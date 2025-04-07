@@ -1,15 +1,17 @@
+
+
 import dotenv from "dotenv";
+
+
 dotenv.config();
 
-import { connectDB } from "./db/index.js";
+const clientId = process.env.CLIENTID;
+const clientSecret = process.env.CLIENTSECRET;
 
-connectDB();
+let accessToken = null;
+let tokenExpiryTime = null;
 
-// Function to get the access token
 const getAccessToken = async () => {
-  const clientId = process.env.CLIENTID;
-  const clientSecret = process.env.CLIENTSECRET;
-
   const auth =
     "Basic " + Buffer.from(clientId + ":" + clientSecret).toString("base64");
 
@@ -25,15 +27,24 @@ const getAccessToken = async () => {
   });
 
   const data = await response.json();
+  
+  accessToken = data.access_token;
+  tokenExpiryTime = Date.now() + data.expires_in * 1000; // expires_in is in seconds
 
-  return data.access_token; // Return the access token
+  console.log("✅ Spotify access token refreshed");
+
+  return accessToken;
+};
+
+// Public function to always get a valid token
+const getValidAccessToken = async () => {
+  if (!accessToken || Date.now() >= tokenExpiryTime - 60 * 1000) {
+    // Token expired or about to expire in 60s
+    return await getAccessToken();
+  }
+
+  return accessToken;
 };
 
 
-let accessToken = await getAccessToken();
-
-setInterval(async () => {
-  accessToken = await getAccessToken();
-}, 3600000); // Refresh the token every hour
-
-export default accessToken;
+export default accessToken = getValidAccessToken();

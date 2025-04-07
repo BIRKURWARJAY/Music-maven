@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchSongs } from "../../features/AccessToken";
 import { useEffect, useState, useCallback, useRef } from "react";
 
@@ -16,13 +16,13 @@ export default function SearchBar() {
   // Debounced search function
   const debouncedSearch = useCallback(
     async (searchTerm) => {
-      if (searchTerm?.length > 3 && searchTerm !== prevSearch) {
+      if (searchTerm?.length > 1 && searchTerm !== prevSearch) {
         let songs = await fetchSongs(searchTerm, 3);
         setSongs(songs);
         console.log("songs", songs);
         
         setPrevSearch(searchTerm);
-      } else if (searchTerm.length < 4){
+      } else if (searchTerm.length < 1){
         setSongs([]);
       }
     },

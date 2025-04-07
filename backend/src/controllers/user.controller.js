@@ -4,9 +4,8 @@ import { User } from "../models/user.model.js"
 
 const cookieOptions = {
   expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
-  httpOnly: true,
   secure: true,
-  sameSite: "strict"
+  sameSite: "none"
 }
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -89,6 +88,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
 const logoutUser = asyncHandler(async (req, res) => {
+
+  
+
   res
   .status(200)
   .clearCookie("user")

@@ -7,7 +7,7 @@ const ArtistsAlbum = lazy(() => import("./ArtistsAlbum") );
 
 
 
-export const isLoggedIn = document.cookie.includes("token") ? true : false;
+export const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
 
 
 export default function Home() {

@@ -1,8 +1,7 @@
-import HomeSongsList from "./HomeSongsLists"
-
+import HomeArtists from "./HomeArtists"
 
 export default function ArtsitsAlbum() {
  
 
-  return <HomeSongsList displayName={"Top Artists"} songQuery={"Honey Singh"} />
+  return <HomeArtists displayName={"Top Artists"} songQuery={"artists"} />
 }

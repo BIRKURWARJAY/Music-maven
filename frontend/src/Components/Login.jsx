@@ -6,29 +6,24 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 //function to redirect to Spotify authorization page
-const redirectToSpotifyAuth = () => {
-  window.location = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}`;
+export const redirectToSpotifyAuth = () => {
+  const CLIENT_ID = `${import.meta.env.VITE_CLIENT_ID}`;
+  const REDIRECT_URI = "http://localhost:5173/callback";
+  const SCOPES = [
+    "streaming",
+    "user-read-email",
+    "user-read-private",
+    "user-modify-playback-state",
+    "user-read-playback-state"
+  ].join("%20");
+  window.location = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}&show_dialog=false`;
 };
 
-const CLIENT_ID = `${import.meta.env.VITE_CLIENT_ID}`;
-const REDIRECT_URI = "http://localhost:5173/callback";
-const SCOPES = [
-  "streaming",
-  "user-read-email",
-  "user-read-private",
-  "user-modify-playback-state",
-  "user-read-playback-state"
-].join("%20");
 
 export default function Login() {
   const location = useLocation();
   const navigate = useNavigate();
   const message = location.state?.message || null;
-
-
-
- 
-
 
   const [userDetails, setUserDetails] = useState({
     email: "",
