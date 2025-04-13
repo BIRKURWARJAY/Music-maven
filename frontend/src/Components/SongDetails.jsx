@@ -1,30 +1,115 @@
-import { useLocation } from "react-router-dom";
-import { lazy, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { lazy, useState, useEffect } from "react";
 import sendId from "../../features/songId";
-import { playSong } from "../../index";
+import { playSongById } from "../../index";
+import { fetchSongById } from "../../features/AccessToken";
 
+
+export const player = window.onSpotifyWebPlaybackSDKReady(); 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
 const CurrentSong = lazy(() => import("./CurrentSong"));
 
+
+
+
+
+// Log the playback state and return the current track
+export const logPlaybackState = async () => {  
+  try {
+    const state = await player.getCurrentState();
+    if (!state) {
+      console.error('User is not playing music through the Web Playback SDK');
+      return null;
+    }
+    
+    const isSongPaused = state.paused;
+    const currentTrack = state.track_window.current_track;
+    const nextTrack = state.track_window.next_tracks[0];
+    
+    console.log('Currently Playing', currentTrack.id);
+    console.log('Playing Next', nextTrack);
+    
+    return { currentTrack, isSongPaused };
+  } catch (error) {
+    console.error('❌ Error retrieving player state:', error);
+  }
+};
+
 export default function SongDetails() {
+  const params = useParams();
+  const songId = params.songId
   const location = useLocation();
-  const { song } = location?.state || {};
-  const songMin = Math.floor(song.duration / 60000);
-  const songSec = ((song.duration % 60000) / 1000).toFixed(0);
+  const [song, setSong] = useState(null)
+  
+    
+    
+  useEffect(() => {
+
+    async function gs(){
+      let fs = await fetchSongById(songId);
+      let fetchedSong = {
+        songId: fs?.id,
+        imageUrl: fs.album?.images[0]?.url,
+        name: fs?.name,
+        artist: fs?.artists?.map((artist) => artist.name),
+        release: fs.album?.release_date,
+        duration: fs?.duration_ms,
+        artistId: fs.artists?.map((artist) => artist.id)
+      }      
+      setSong(location?.state?.song || fetchedSong);
+    }
+    
+    if (songId) {
+      gs();
+    }
+
+    async function ct() { 
+      const {currentTrack, isSongPaused} = await logPlaybackState();    
+      setPlayState(!isSongPaused && (currentTrack.id === songId));
+    }
+    ct()
+
+    return () => null
+  }, [songId])
+
+  const songMin = Math.floor(song?.duration / 60000);
+  const songSec = ((song?.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
   const [playState, setPlayState] = useState(false);
-  sendId(song.songId);
+  console.log(song);
+  
+  sendId(song?.songId);
 
-  const handleSong = (songId) => {
-    playSong(songId);
-    setPlayState((prev) => !prev)
+
+
+
+  //checks if current playing song is same then it will resume or play song::
+  const resumeSong = async (songId) => {
+    const state = await logPlaybackState();
+    
+    if (state.currentTrack.id === songId) {
+      player.resume().then(() => {
+        console.log('Resumed!');
+      });
+      setPlayState(true);
+    } else {
+      playSongById(songId);
+      setPlayState(true);
+    }
+  };
+
+  const pauseSong = () => {
+    player.pause().then(() => {
+      console.log('Paused!');
+    });
+    setPlayState(false);
   };
 
   return (
     <div className="mt-28 mx-28">
       {song ? (
         <>
-          <div className="flex justify-between mx-20 bg-transparent gap-x-20">
+          <div className="flex justify-between bg-transparent gap-x-20">
             <div className="w-1/4 px-6 py-4 justify-items-center items-center bg-transparent text-white gap-y-3 grid">
               <img
                 loading="lazy"
@@ -33,7 +118,7 @@ export default function SongDetails() {
                 className="w-full"
               />
               <h1 className="text-2xl font-bold">
-                {song.name.length > 50 ? (
+                {song.name?.length > 50 ? (
                   <marquee
                     behavior="alternate"
                     scrollamount="5"
@@ -59,12 +144,12 @@ export default function SongDetails() {
                 {!playState ? (
                   <i
                     className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
-                    onClick={() => handleSong(song.songId)}
+                    onClick={() => playSongById(songId)}
                   ></i>
                 ) : (
                   <i
                     className="fa-solid fa-pause px-8 py-6 bg-white rounded-full text-black text-2xl"
-                    onClick={() => handleSong(song.songId)}
+                    onClick={pauseSong}
                   ></i>
                 )}
                 <i
@@ -78,6 +163,9 @@ export default function SongDetails() {
               <SongPlaylist
                 song={song}
                 duration={songDuration}
+                playState={playState}
+                resumeSong={resumeSong}
+                pauseSong={pauseSong}
               />
             </div>
             <CurrentSong currentSong={song} />

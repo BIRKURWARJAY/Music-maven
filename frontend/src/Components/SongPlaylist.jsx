@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function SongPlaylist({ song }) {
+export default function SongPlaylist({ song, duration, playState, resumeSong, pauseSong }) {
   const [isHovered, setIsHovered] = useState(false);
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
-  const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`
-
-
+  const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
+  
 
 
   return (
@@ -25,8 +24,22 @@ export default function SongPlaylist({ song }) {
               alt={song.name}
               className={`size-16 rounded-md transition-all duration-300 ${isHovered ? "brightness-50" : ""}`}
             />
-            {isHovered && (
-              <i className="fa-solid fa-play text-xl absolute inset-0 flex items-center justify-center text-white"></i>
+            {(isHovered && !playState) && (
+              <i
+                className="fa-solid fa-play text-xl absolute inset-0 flex items-center justify-center text-white"
+                onClick={() => {
+                  resumeSong(song.songId);
+                }}
+              ></i>
+            )}
+
+            {(isHovered && playState) && (
+              <i
+                className="fa-solid fa-pause text-xl absolute inset-0 flex items-center justify-center text-white"
+                onClick={() => {
+                  pauseSong();
+                }}
+              ></i>
             )}
           </div>
           <div className="song-playlist-info">
@@ -66,11 +79,13 @@ export default function SongPlaylist({ song }) {
               className=" size-4 "
               title="Add to Playlist"
             />
-            <i className="fa-solid fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"
-            title="Details"></i>
+            <i
+              className="fa-solid fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"
+              title="Details"
+            ></i>
           </div>
         ) : (
-          songDuration
+          duration ? duration : songDuration
         )}
       </div>
     </div>

@@ -93,6 +93,10 @@ export default function Login() {
               Platform
             </p>
 
+            <p className="font-bold text-3xl my-5 text-pretty">
+              Just Login with your spotify email
+            </p>
+
             <img
               src="src/assets/login-music-image.jpg"
               alt="img"
@@ -110,7 +114,7 @@ export default function Login() {
 
             <p className="text-center flex items-center justify-between">
               <span className="mb-4 text-rose-600 pl-1">__</span> Or Log in with
-              your email <span className="mb-4 text-rose-600 pr-1">__</span>
+              your spotify email <span className="mb-4 text-rose-600 pr-1">__</span>
             </p>
 
             <form

@@ -1,9 +1,8 @@
 
-
+import {connectDB} from "./db/index.js"
 import dotenv from "dotenv";
-
-
 dotenv.config();
+connectDB();
 
 const clientId = process.env.CLIENTID;
 const clientSecret = process.env.CLIENTSECRET;

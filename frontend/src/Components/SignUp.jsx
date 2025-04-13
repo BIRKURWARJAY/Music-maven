@@ -98,6 +98,10 @@ export default function SignUp() {
               Platform
             </p>
 
+            <p className="font-bold text-3xl my-5 text-pretty">
+              Signup with your spotify Iemail
+            </p>
+
             <img
               src="src/assets/login-music-image.jpg"
               alt="img"
@@ -115,7 +119,7 @@ export default function SignUp() {
 
             <p className="text-center flex items-center justify-between">
               <span className="mb-4 text-rose-600 pl-1">__</span> Or Sign up
-              with your email{" "}
+              with your Spotify email{" "}
               <span className="mb-4 text-rose-600 pr-1">__</span>
             </p>
 

@@ -59,10 +59,10 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
   const existedUser = await User.findOne({ email });
-
+  
 
   if (existedUser) {
-    if (existedUser.isPasswordCorrect(password)) {
+    if (await existedUser.isPasswordCorrect(password)) {
       console.log("User logged in successfully");
       res
       .status(200)

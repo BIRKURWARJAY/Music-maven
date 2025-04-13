@@ -72,13 +72,13 @@ export default function SearchBar() {
                 }
                 }}                
               >
-                <li
+                <button
                  
                   className="rounded-lg p-3 w-full text-slate-400 outline-none 
-                bg-slate-950 hover:bg-opacity-15 hover:bg-white"
+                bg-slate-950 hover:bg-opacity-15 hover:bg-white border-y-[1px] border-cyan-400"
                 >
                   {song.name}
-                </li>
+                </button>
               </Link>    
             ))}
           </ul>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import SongHome from "./SongHome";
-import { fetchSongs, fetchAccessToken } from "../../features/AccessToken";
+import { fetchSongs } from "../../features/AccessToken";
 
-fetchAccessToken();
+
 
 export default function HomeSongsList({ displayName, songQuery }) {
   const [loading, setLoading] = useState(true);
