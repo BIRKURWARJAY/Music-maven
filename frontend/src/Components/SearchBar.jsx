@@ -1,29 +1,49 @@
 import { Link } from "react-router-dom";
-import { fetchSongs } from "../../features/AccessToken";
+import {
+  fetchSongs,
+  fetchAlbum,
+  fetchMovieSongs
+} from "../../features/AccessToken";
 import { useEffect, useState, useCallback, useRef } from "react";
 
 export default function SearchBar() {
   const [search, setSearch] = useState("");
   const [prevSearch, setPrevSearch] = useState("");
   const [songs, setSongs] = useState([]);
+  const [album, setAlbum] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef();
 
-
-
-
-
-  // Debounced search function
   const debouncedSearch = useCallback(
     async (searchTerm) => {
-      if (searchTerm?.length > 1 && searchTerm !== prevSearch) {
-        let songs = await fetchSongs(searchTerm, 3);
+      const trimmedSearch = searchTerm.trim();
+
+      if (trimmedSearch.toLowerCase().startsWith("album:")) {
+        const albumName = trimmedSearch.split("album:")[1]?.trim();
+        if (albumName) {
+          const album = await fetchMovieSongs(albumName);
+          console.log(album);
+
+          setSongs([]);
+          setAlbum(album);
+          setPrevSearch(""); // reset prevSearch to allow similar term as song later
+        }
+        return;
+      }
+
+      if (trimmedSearch.length < 1) {
+        setSongs([]);
+        setAlbum(null);
+        setPrevSearch("");
+        return;
+      }
+
+      if (trimmedSearch !== prevSearch) {
+        const songs = await fetchSongs(trimmedSearch, 5, 1);
+        setAlbum(null);
         setSongs(songs);
         console.log("songs", songs);
-        
-        setPrevSearch(searchTerm);
-      } else if (searchTerm.length < 1){
-        setSongs([]);
+        setPrevSearch(trimmedSearch);
       }
     },
     [prevSearch]
@@ -31,21 +51,34 @@ export default function SearchBar() {
 
   useEffect(() => {
     const inputElement = inputRef.current;
+  
+    const handleFocus = () => setIsFocused(true);
+    const handleBlur = () => setTimeout(() => setIsFocused(false), 400);
+  
     if (inputElement) {
-      inputElement.addEventListener("focus", () => setIsFocused(true));
-      inputElement.addEventListener("blur", () => setTimeout(() => {
-        setIsFocused(false);
-      }, 400));
+      inputElement.addEventListener("focus", handleFocus);
+      inputElement.addEventListener("blur", handleBlur);
     }
+  
+    return () => {
+      if (inputElement) {
+        inputElement.removeEventListener("focus", handleFocus);
+        inputElement.removeEventListener("blur", handleBlur);
+      }
+    };
+  }, []);
 
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
-      debouncedSearch(search);
-    }, 1000);
+      debouncedSearch(search);  // This is where you call the debouncedSearch
+    }, 1000);  // The debounce delay is set to 1000ms (1 second)
+  
+    return () => clearTimeout(timeoutId);  // Cleanup the timeout on every search change
+  }, [search, debouncedSearch]);  // Run this effect whenever `search` changes
+  
 
-    // Cleanup timeout on every search change
-    return () => clearTimeout(timeoutId);
-  }, [search, debouncedSearch]);
-
+  
   return (
     <>
       <div className="w-[70%] relative">
@@ -54,37 +87,67 @@ export default function SearchBar() {
           placeholder="Search for songs, artists, albums, podcasts"
           className="rounded-lg p-3 w-full bg-white bg-opacity-5 backdrop-blur-lg text-slate-400 caret-slate-400 border-none outline-none focus:bg-slate-950 hover:bg-opacity-15"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value.trim())}
           ref={inputRef}
         />
-        {songs.length > 0 && isFocused ? (
-          <ul className="w-full flex flex-col absolute z-40 top-12 left-0 bg-opacity-5 backdrop-blur-lg">
-            {songs?.map((song) => (              
-              <Link to={`song/${song.id}`} key={song.id} state={{
-                song: {
-                  songId: song?.id,
-                  imageUrl: song.album?.images[0]?.url,
-                  name: song?.name,
-                  artist: song?.artists?.map((artist) => artist.name),
-                  release: song.album?.release_date,
-                  duration: song?.duration_ms,
-                  artistId: song.artists?.map((artist) => artist.id)
-                }
-                }}                
-              >
-                <button
-                 
-                  className="rounded-lg p-3 w-full text-slate-400 outline-none 
-                bg-slate-950 hover:bg-opacity-15 hover:bg-white border-y-[1px] border-cyan-400"
-                >
-                  {song.name}
-                </button>
-              </Link>    
-            ))}
-          </ul>
-        ) : (
-          null
-        )}
+       {songs.length > 0 && isFocused ? (
+  <ul className="w-full flex flex-col absolute z-40 top-12 left-0 bg-opacity-5 backdrop-blur-lg">
+    {songs.map((song) => (
+      <Link
+        to={`song/${song.id}`}
+        key={song.id}
+        state={{
+          song: {
+            songId: song.id,
+            imageUrl: song.album?.images[0]?.url,
+            name: song.name,
+            artist: song.artists?.map((artist) => artist.name),
+            release: song.album?.release_date,
+            duration: song.duration_ms,
+            artistId: song.artists?.map((artist) => artist.id)
+          }
+        }}
+      >
+        <button
+          className="rounded-lg p-3 w-full text-slate-400 outline-none 
+          bg-slate-950 hover:bg-opacity-15 hover:bg-white border-y-[1px] border-cyan-400"
+          onClick={() => setSearch("")}
+        >
+          {song.name}
+        </button>
+      </Link>
+    ))}
+  </ul>
+) : album?.length > 0 && isFocused ? (
+  <ul className="w-full flex flex-col absolute z-40 top-12 left-0 bg-opacity-5 backdrop-blur-lg">
+    {album.map((item) => (
+      <Link
+        to={`album/${item.id}`}
+        key={item.id}
+        state={{
+          album: {
+            albumId: item.id,
+            imageUrl: item.images[0]?.url,
+            name: item.name,
+            artist: item.artists?.map((artist) => artist.name),
+            release: item.album?.release_date,
+            duration: item.duration_ms,
+            artistId: item.artists?.map((artist) => artist.id)
+          }
+        }}
+      >
+        <button
+          className="rounded-lg p-3 w-full text-slate-400 outline-none 
+          bg-slate-950 hover:bg-opacity-15 hover:bg-white border-y-[1px] border-cyan-400"
+          onClick={() => setSearch("")}
+        >
+          {item.name}
+        </button>
+      </Link>
+    ))}
+  </ul>
+) : null}
+
       </div>
     </>
   );

@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function SongPlaylist({ song, duration, playState, resumeSong, pauseSong }) {
+
+
+
+export default function SongPlaylist({ song, duration, resumeSong, pauseSong, isPlaying,  currentTrackId}) {
   const [isHovered, setIsHovered] = useState(false);
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
   
+  const isCurrentSongPlaying = currentTrackId === song.songId && isPlaying;  
 
 
   return (
@@ -24,7 +28,7 @@ export default function SongPlaylist({ song, duration, playState, resumeSong, pa
               alt={song.name}
               className={`size-16 rounded-md transition-all duration-300 ${isHovered ? "brightness-50" : ""}`}
             />
-            {(isHovered && !playState) && (
+            {((!isCurrentSongPlaying) )  && (
               <i
                 className="fa-solid fa-play text-xl absolute inset-0 flex items-center justify-center text-white"
                 onClick={() => {
@@ -32,8 +36,8 @@ export default function SongPlaylist({ song, duration, playState, resumeSong, pa
                 }}
               ></i>
             )}
-
-            {(isHovered && playState) && (
+  
+            {(isCurrentSongPlaying && isPlaying ) && (
               <i
                 className="fa-solid fa-pause text-xl absolute inset-0 flex items-center justify-center text-white"
                 onClick={() => {

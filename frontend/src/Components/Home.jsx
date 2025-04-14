@@ -3,7 +3,7 @@ import { lazy } from "react";
 
 const Genres = lazy(() => import("./Genres") );
 const TrendingSongsList = lazy(() => import("./TrendingSongsList") );
-const ArtistsAlbum = lazy(() => import("./ArtistsAlbum") );
+const ArtistsAlbum = lazy(() => import("./ArtistsAlbum"));
 
 
 

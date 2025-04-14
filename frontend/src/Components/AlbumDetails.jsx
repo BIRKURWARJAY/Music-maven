@@ -3,34 +3,46 @@ import { lazy, useState, useEffect } from "react";
 import sendId from "../../features/songId";
 import { playAlbumById, playSongById } from "../../index";
 import { fetchAlbumsTracks, fetchAlbumById } from "../../features/AccessToken"
-import {logPlaybackState, player} from "./SongDetails"
+import { player } from "./SongDetails"
+import useAlbumPlayerStore from "../../app/albumPlayerStore"
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
-const CurrentSong = lazy(() => import("./CurrentSong"));
 
 
 
 
 export default function AlbumDetails() {
-
+  const { currentTrackIdAS, setCurrentTrackIdAS, isPlayingAS, setIsPlayingAS } = useAlbumPlayerStore();
   const location = useLocation();
   const params = useParams();
   const AlbumId = params.albumId;
   
   const [album, setAlbum] = useState(null);
+  const [songs, setSongs] = useState([]); 
+  const [currentTrackId, setCurrentTrackId] = useState(null);
+  const songsIds = songs.map(song => song.id);
+  const iscurrentAlbumPlaying = isPlayingAS && songsIds.includes(currentTrackIdAS);
+  console.log(songsIds);
+  console.log("playing", isPlayingAS);
+  console.log("ctid", currentTrackIdAS);
   
+  
+  
+  console.log(iscurrentAlbumPlaying);
+  
+  
+ 
+
   useEffect(() => {
-    const fetchSongs = async (albumId) => {
-      const songs = await fetchAlbumsTracks(albumId);
+    const fetchSongs = async () => {
+      const songs = await fetchAlbumsTracks(AlbumId);
       
       setSongs(songs);
     }
     
-    fetchSongs(AlbumId);
+    fetchSongs();
     
-    
-    async function ga(albumId) {
-      console.log(albumId);
+    async function ga() {
       let fa = await fetchAlbumById(AlbumId);
       let fetchedAlbum = {
         songId: fa?.id,
@@ -46,60 +58,51 @@ export default function AlbumDetails() {
 
     ga(); 
 
-    async function ct() { 
-      const {currentTrack, isSongPaused} = await logPlaybackState();    
-      setPlayState(!isSongPaused && songs.filter((song) => {
-        currentTrack.id === song.id;
-      }) );
-    }
-    ct()
   }, [AlbumId])
 
 
-  const [songs, setSongs] = useState([]); 
-  const [playState, setPlayState] = useState(false);
-
-
-  sendId(AlbumId);  
-
-
-
-  //To play whole album::
-  function handleAlbum(albumId) {
-    playAlbumById(albumId)
+  async function x() {
+    setCurrentTrackId(songsIds.at(0));
   }
+  
+  
+  const totalDurationMs = songs.reduce((acc, song) => acc + song.duration_ms, 0);
+  const albumMin = Math.floor(totalDurationMs / 60000);
+  const albumSec = ((totalDurationMs % 60000) / 1000).toFixed(0);
+  const albumDuration = `${albumMin} : ${albumSec < 10 ? "0" : ""} ${albumSec}`;
+  
 
-
-  //checks if current playing song is same then it will resume or play song::
-  const resumeSong = async (songId) => {
-    const state = await logPlaybackState();
-    
-    if (state.currentTrack.id === songId) {
-      player.resume().then(() => {
-        console.log('Resumed!');
-      });
-      setPlayState(true);
+  
+  async function resumeSong(songId) {
+ 
+    if (currentTrackIdAS === (songId || currentTrackId)) {
+      player.resume()
+      setIsPlayingAS(true);
+    } else if (songId) {
+      playSongById(songId); 
+      setCurrentTrackIdAS(songId);
+      sendId(songId);
+      setIsPlayingAS(true);
     } else {
-      playSongById(songId);
-      setPlayState(true);
+      playAlbumById(AlbumId);
+      setCurrentTrackIdAS(currentTrackId);
+      sendId(currentTrackId);
+      setIsPlayingAS(true);
     }
   };
   
-
-  const pauseSong = async () => {
-    player.pause().then(() => {
-      console.log('Paused!');
-    });
-    setPlayState(false);
+  
+  function pauseSong(){
+    player.pause();
+    setIsPlayingAS(false);
   };
-
-
-
+  
+  
 
   return (
     <>
       {album ? (
-        <div className="mx-28 mt-28 grid grid-cols-12 bg-transparent gap-x-20 h-[calc(100vh-7rem)] overflow-hidden">
+        <div className="mx-28 mt-28 grid grid-cols-12 bg-transparent gap-x-20 h-[calc(100vh-7rem)] max-h[calc(100vh - 80px)] overflow-hidden">
           <div className="col-span-4 px-6 py-4 w-[80%] max-h-[400px] items-center text-white gap-y-3 flex flex-col sticky top-0 left-12">
             <img
               loading="lazy"
@@ -120,15 +123,24 @@ export default function AlbumDetails() {
             <p className="text-slate-300 font-semibold text-pretty">
               {album.artist?.join(" , ")}
             </p>
+            {albumDuration}
             <div className="flex gap-8 items-center">
               <i
                 className="fa-regular fa-square-plus px-3 py-2 rounded-full bg-white bg-opacity-5 text-xl"
                 title="Add all to Playlist"
               ></i>
-              <i
-                className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
-                onClick={() => handleAlbum(AlbumId)}
-              ></i>
+              {iscurrentAlbumPlaying && isPlayingAS ? (
+                  <i
+                    className="fa-solid fa-pause px-8 py-6 bg-white rounded-full text-black text-2xl"
+                    onClick={pauseSong}
+                    ></i>
+                  ) : (
+                    <i
+                    className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
+                    onClick={() => resumeSong()}
+                    onMouseOver={() => x()}
+                  ></i>
+                )}
               <i
                 className="fa-solid fa-ellipsis-vertical px-5 py-2 rounded-full bg-white bg-opacity-5 text-xl"
                 title="Details"
@@ -151,7 +163,8 @@ export default function AlbumDetails() {
                 }}
                 resumeSong={resumeSong}
                 pauseSong={pauseSong}
-                playState={playState}
+                currentTrackId={currentTrackIdAS}
+                isPlaying={isPlayingAS}
               />
             ))}
           </div>

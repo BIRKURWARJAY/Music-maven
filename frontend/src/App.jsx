@@ -1,28 +1,36 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { Suspense } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import Header from "./Components/Header";
+
+const CurrentSong = lazy(() => import("./Components/CurrentSong"));
 
 function App() {
   const location = useLocation();
   const exemptedRoutes = ["/signup", "/login", "/premium"];
-
-  // Determine if the current route is exempted
   const isExemptedRoute = exemptedRoutes.includes(location.pathname);
 
-  // Apply the background style conditionally
-  if (!isExemptedRoute) {
-    document.body.style.backgroundImage = "linear-gradient(#081F21, #071721)";
-  } else {
-    document.body.style.backgroundImage = "none";
-  }
+  useEffect(() => {
+    document.body.style.backgroundImage = isExemptedRoute
+      ? "none"
+      : "linear-gradient(#081F21, #071721)";
+  }, [isExemptedRoute]);
 
   return (
-    <>
+    <div className="max-h-screen pb-28 relative">
       {!isExemptedRoute && <Header />}
-      <Suspense fallback={<div>Loading...</div>}>
+
+      <Suspense fallback={<div>Loading Page...</div>}>
         <Outlet />
       </Suspense>
-    </>
+
+      {!isExemptedRoute && (
+        <Suspense fallback={<div>Loading Player...</div>}>
+          <div className="fixed bottom-0 left-0 w-full z-50">
+            <CurrentSong />
+          </div>
+        </Suspense>
+      )}
+    </div>
   );
 }
 

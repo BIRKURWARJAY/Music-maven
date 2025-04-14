@@ -72,7 +72,7 @@ async function initializeSpotifyPlayer() {
 }  
 
 
-initializeSpotifyPlayer()
+initializeSpotifyPlayer();
 
 
 

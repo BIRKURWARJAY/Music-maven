@@ -56,8 +56,9 @@ export const fetchAlbum = async (query, limit = 20) => {
       );
       const data = await response.json();
       
-        let song = data.albums.items;
-        return song;
+      let song = data.albums.items;
+      
+      return song;
     } else {
       return "access Token Expired";
     }
@@ -69,6 +70,31 @@ export const fetchAlbum = async (query, limit = 20) => {
 };
 
 
+//function that fetch the demanded movie songs;
+export const fetchMovieSongs = async (query) => {
+  try {
+    if (accessToken && query.trim().length > 0) {
+      const response = await fetch(
+        `https://api.spotify.com/v1/search?q=${query}&type=album&limit=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
+      const data = await response.json();
+      
+      let song = data.albums.items;      
+      return song;
+    } else {
+      return "access Token Expired";
+    }
+
+  } catch (error) {
+    console.error("Error fetching songs", error);
+    return error;
+  }
+};
 
 
 //function that fetch the demanded album tracks;
@@ -135,7 +161,6 @@ export const fetchAlbumById = async (albumId) => {
       console.warn("⚠️ Access Token Expired or Missing");
       return null;
     }
-    console.log("at", albumId);
     
     const response = await fetch(
       `https://api.spotify.com/v1/albums/${albumId}`,
@@ -151,7 +176,6 @@ export const fetchAlbumById = async (albumId) => {
     }
 
     const data = await response.json();      
-    console.log(data);
     
     return data;
   } catch (error) {
