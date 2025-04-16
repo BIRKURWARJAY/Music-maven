@@ -11,7 +11,7 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong, is
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
   
   const isCurrentSongPlaying = currentTrackId === song.songId && isPlaying;  
-
+  
 
   return (
     <div
@@ -46,9 +46,10 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong, is
               ></i>
             )}
           </div>
-          <div className="song-playlist-info">
+          <div className="song-playlist-info overflow-hidden">
             <h3 className="font-bold text-xl">{song.name}</h3>
-            <p className="text-[#7F7676] font-semibold truncate">
+            {song.artist.join(", ").length < 70 ? (
+              <p className="text-[#7F7676] font-semibold truncate">
               {song.artist?.map((artist, index) => (
                 <span key={`${song.songId}-${index}`}>
                   <span>
@@ -70,6 +71,30 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong, is
                 </span>
               ))}
             </p>
+            ) : (
+              <p className="text-[#7F7676] animate-marqueeArtistName whitespace-nowrap hover:[animation-play-state:paused] font-semibold truncate">
+              {song.artist?.map((artist, index) => (
+                <span key={`${song.songId}-${index}`}>
+                  <span>
+                    <Link
+                      to={`/artist/${artist.split(" ").join("")}`}
+                      state={{ artist, artistId: song.artistId[index] }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.textDecoration = "underline";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.textDecoration = "none";
+                      }}
+                    >
+                      {artist}
+                    </Link>
+                    {index < song.artist.length - 1 ? "  ,  " : ""}
+                    {index === song.artist.length - 2 ? "  &  " : ""}
+                  </span>
+                </span>
+              ))}
+            </p>
+            )}
           </div>
         </div>
         {isHovered ? (

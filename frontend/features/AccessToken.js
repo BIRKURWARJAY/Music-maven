@@ -1,18 +1,16 @@
 import axios from "axios";
 
-const fetchAccessToken = async () => {
+export const fetchAccessToken = async () => {
   try {
-    const res = await axios.get("/api/accessToken");
+    const res = await axios.get("/api/generalToken");
     return res.data.accessToken;
   } catch (err) {
     console.error(" error accessing token");
-    
     return null;
   }
 };
 
-export const accessToken = await fetchAccessToken();
-
+const accessToken = await fetchAccessToken()
 
 //function that fetch the demanded songs
 export const fetchSongs = async (query, limit = 20) => {

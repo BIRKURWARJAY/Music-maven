@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
-import { lazy, useState, useEffect } from "react";
+import { lazy, useState, useEffect, memo } from "react";
 import sendId from "../../features/songId";
 import { playSongById } from "../../index";
 import { fetchSongById } from "../../features/AccessToken";
@@ -12,14 +12,15 @@ const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
 
 
-export default function SongDetails() {
+function SongDetails() {
   const params = useParams();
   const songId = params.songId;
   const location = useLocation();
-  const { setCurrentTrackId, setIsPlaying, isPlaying, currentTrackId } = usePlayerStore();
+  const { setCurrentTrackId, isPlaying, currentTrackId } = usePlayerStore();
 
   const [song, setSong] = useState(null);
   console.log(isPlaying);
+  
   
 
   const isCurrentSongPlaying = isPlaying && currentTrackId === songId;
@@ -27,6 +28,10 @@ export default function SongDetails() {
 
   useEffect(() => {
     async function loadSongDetails() {
+      if (!location.state.song) {
+        setSong(location.state.song);
+        return;
+      }
       const fs = await fetchSongById(songId);
       const fetchedSong = {
         songId: fs?.id,
@@ -37,7 +42,7 @@ export default function SongDetails() {
         duration: fs?.duration_ms,
         artistId: fs?.artists?.map((artist) => artist.id),
       };
-      setSong(location?.state?.song || fetchedSong);
+      setSong(fetchedSong);
     }    
     loadSongDetails();
   }, [songId]);
@@ -52,18 +57,15 @@ export default function SongDetails() {
 
     if (currentTrackId === songId) {
       player.resume();
-      setIsPlaying(true);
     } else {
       sendId(songId);
       setCurrentTrackId(songId);
       playSongById(songId);
-      setIsPlaying(true);
     }
   }
 
   function pauseSong() {
     player.pause();
-    setIsPlaying(false);
   }
 
   return (
@@ -99,12 +101,12 @@ export default function SongDetails() {
               ></i>
               {isPlaying && isCurrentSongPlaying ? (
                 <i
-                  className="fa-solid fa-pause px-8 py-6 bg-white rounded-full text-black text-2xl"
+                  className="fa-solid fa-pause cursor-pointer px-8 py-6 bg-white rounded-full text-black text-2xl"
                   onClick={pauseSong}
                   ></i>
                 ) : (
                   <i
-                  className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
+                  className="fa-solid fa-play cursor-pointer px-8 py-6 bg-white rounded-full text-black text-2xl"
                   onClick={() => resumeSong(songId)}
                 ></i>
               )}
@@ -132,3 +134,6 @@ export default function SongDetails() {
     </div>
   );
 }
+
+
+export default memo(SongDetails);

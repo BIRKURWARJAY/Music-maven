@@ -1,42 +1,41 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { redirectToSpotifyAuth } from "./Login";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Callback = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  
 
   useEffect(() => {
-    const existingToken = localStorage.getItem("accessToken");
-    const tokenExpiry = localStorage.getItem("tokenExpiry");
-    
-    if (!existingToken || Date.now() > parseInt(tokenExpiry)) {
-      // Clear expired token before redirecting
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("tokenExpiry");
-      redirectToSpotifyAuth();
+    const code = searchParams.get("code");
+    if (!code) {
+      navigate("/login");
+      return;
     }
-
-    if (!existingToken) {
-      const hash = window.location.hash;
-      const accessTokenMatch = hash.match(/access_token=([^&]*)/);
-
-      if (accessTokenMatch && accessTokenMatch[1]) {
-        const token = accessTokenMatch[1];
-        const expiryTime = Date.now() + 3600 * 1000 - 5000; // Add buffer for expiry time
-
-        localStorage.setItem("accessToken", token);
-        localStorage.setItem("tokenExpiry", expiryTime.toString());
-
-        navigate("/", { replace: true });
+  
+    const fetchTokens = async () => {
+      const res = await fetch("api/getAccessToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+  
+      const data = await res.json();
+      
+      if (data.access_token && data.refresh_token) {
+        localStorage.setItem("accessToken", data.access_token);
+        localStorage.setItem("refreshToken", data?.refresh_token);
+        localStorage.setItem("tokenExpiry", (Date.now() + data.expires_in * 1000 - 60 * 1000).toString());
+        navigate("/");
       } else {
-        console.error("Access token not found in URL");
-        navigate("/login", { replace: true });
+        navigate("/login");
       }
-    } else {
-      navigate("/", { replace: true }); // Already has a valid token
-    }
-
-  }, [navigate]);
+    };
+  
+    fetchTokens();
+  }, []);
+  
 
   return null; // Don't render anything
 };

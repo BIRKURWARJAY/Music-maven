@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+
 const usePlayerStore = create((set) => ({
   isPlaying: false,
   currentTrackId: null,

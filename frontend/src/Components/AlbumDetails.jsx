@@ -12,7 +12,7 @@ const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
 
 export default function AlbumDetails() {
-  const { currentTrackIdAS, setCurrentTrackIdAS, isPlayingAS, setIsPlayingAS } = useAlbumPlayerStore();
+  const { currentTrackIdAS, setCurrentTrackIdAS, isPlayingAS } = useAlbumPlayerStore();
   const location = useLocation();
   const params = useParams();
   const AlbumId = params.albumId;
@@ -21,7 +21,7 @@ export default function AlbumDetails() {
   const [songs, setSongs] = useState([]); 
   const [currentTrackId, setCurrentTrackId] = useState(null);
   const songsIds = songs.map(song => song.id);
-  const iscurrentAlbumPlaying = isPlayingAS && songsIds.includes(currentTrackIdAS);
+  const iscurrentAlbumPlaying = songsIds.includes(currentTrackIdAS);
   console.log(songsIds);
   console.log("playing", isPlayingAS);
   console.log("ctid", currentTrackIdAS);
@@ -43,6 +43,11 @@ export default function AlbumDetails() {
     fetchSongs();
     
     async function ga() {
+      if (!location.state.album) {
+        setAlbum(location.state.album);
+        return;
+      }
+
       let fa = await fetchAlbumById(AlbumId);
       let fetchedAlbum = {
         songId: fa?.id,
@@ -53,7 +58,7 @@ export default function AlbumDetails() {
         duration: fa?.duration_ms,
         artistId: fa.artists?.map((artist) => artist.id)
       }
-      setAlbum(location?.state?.album || fetchedAlbum);
+      setAlbum(fetchedAlbum);
     }
 
     ga(); 
@@ -75,26 +80,24 @@ export default function AlbumDetails() {
   
   async function resumeSong(songId) {
  
-    if (currentTrackIdAS === (songId || currentTrackId)) {
+    if (currentTrackIdAS === songId) {
       player.resume()
-      setIsPlayingAS(true);
     } else if (songId) {
       playSongById(songId); 
       setCurrentTrackIdAS(songId);
       sendId(songId);
-      setIsPlayingAS(true);
+    } else if (iscurrentAlbumPlaying) {
+      player.resume();
     } else {
       playAlbumById(AlbumId);
       setCurrentTrackIdAS(currentTrackId);
       sendId(currentTrackId);
-      setIsPlayingAS(true);
     }
   };
   
   
   function pauseSong(){
     player.pause();
-    setIsPlayingAS(false);
   };
   
   
@@ -136,13 +139,13 @@ export default function AlbumDetails() {
                     ></i>
                   ) : (
                     <i
-                    className="fa-solid fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
+                    className="fa-solid cursor-pointer fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
                     onClick={() => resumeSong()}
                     onMouseOver={() => x()}
                   ></i>
                 )}
               <i
-                className="fa-solid fa-ellipsis-vertical px-5 py-2 rounded-full bg-white bg-opacity-5 text-xl"
+                className="fa-solid cursor-pointer fa-ellipsis-vertical px-5 py-2 rounded-full bg-white bg-opacity-5 text-xl"
                 title="Details"
               ></i>
             </div>

@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import { fetchAccessToken } from "../../features/AccessToken";
 
 
 const Genres = lazy(() => import("./Genres") );
@@ -7,7 +8,7 @@ const ArtistsAlbum = lazy(() => import("./ArtistsAlbum"));
 
 
 
-export const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
+export const isLoggedIn = await fetchAccessToken() ? true : false;
 
 
 export default function Home() {

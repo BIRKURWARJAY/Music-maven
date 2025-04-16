@@ -16,7 +16,8 @@ export const redirectToSpotifyAuth = () => {
     "user-modify-playback-state",
     "user-read-playback-state"
   ].join("%20");
-  window.location = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}&show_dialog=false`;
+  const url = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}&show_dialog=true`;
+  window.location.href = url;
 };
 
 
@@ -60,8 +61,8 @@ export default function Login() {
             email: "",
             password: ""
           });
-          navigate("/", { state: { success: res.data.success } });
         }
+        redirectToSpotifyAuth();
       })
       .catch((err) => {
         if (err.response) {
@@ -69,9 +70,7 @@ export default function Login() {
         } else {
           setError("An error occurred. Please try again later.");
         }
-      });
-    
-    redirectToSpotifyAuth();
+    });
   };
 
   return (
