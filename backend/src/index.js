@@ -35,6 +35,10 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
+setInterval(async () => {
+  await getValidAccessToken()
+}, 55 * 60 * 1000);
+
 // Public function to always get a valid token
 const getValidAccessToken = async () => {
   if (!accessToken || Date.now() >= tokenExpiryTime - 60 * 1000) {
@@ -46,4 +50,4 @@ const getValidAccessToken = async () => {
 };
 
 
-export default accessToken = getValidAccessToken();
+export default getValidAccessToken;
