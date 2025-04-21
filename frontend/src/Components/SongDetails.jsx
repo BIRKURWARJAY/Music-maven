@@ -18,9 +18,8 @@ function SongDetails() {
   const location = useLocation();
   const { setCurrentTrackId, isPlaying, currentTrackId } = usePlayerStore();
 
-  const [song, setSong] = useState(null);
-  console.log(isPlaying);
-  
+  const [song, setSong] = useState(null);  
+  console.log("kjhdiugj");
   
 
   const isCurrentSongPlaying = isPlaying && currentTrackId === songId;
@@ -28,7 +27,7 @@ function SongDetails() {
 
   useEffect(() => {
     async function loadSongDetails() {
-      if (!location.state.song) {
+      if (location?.state?.song) {
         setSong(location.state.song);
         return;
       }
@@ -64,8 +63,8 @@ function SongDetails() {
     }
   }
 
-  function pauseSong() {
-    player.pause();
+  async function pauseSong() {
+    await player.pause();
   }
 
   return (
@@ -79,7 +78,7 @@ function SongDetails() {
               alt=""
               className="w-full"
             />
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold truncate">
               {song.name?.length > 50 ? (
                 <marquee behavior="alternate" scrollamount="5" scrolldelay="100">
                   {song.name}

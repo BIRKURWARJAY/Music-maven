@@ -1,12 +1,12 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 import Header from "./Components/Header";
-// import SpotifyPlaybackSetter from "../features/SpotifyPlaybackSetter";
-
+import useSpotifyAuth from "../features/SpotifyAuth"
 
 const CurrentSong = lazy(() => import("./Components/CurrentSong"));
 
 function App() {
+  useSpotifyAuth();
   const location = useLocation();
   const exemptedRoutes = ["/signup", "/login", "/premium"];
   const isExemptedRoute = exemptedRoutes.includes(location.pathname);
@@ -18,7 +18,7 @@ function App() {
   }, [isExemptedRoute]);
 
   return (
-    <div className="max-h-screen pb-28 relative">
+    <div className="max-h-screen relative">
       {!isExemptedRoute && <Header />}
 
       <Suspense fallback={<div>Loading Page...</div>}>

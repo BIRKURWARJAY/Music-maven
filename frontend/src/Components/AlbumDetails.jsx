@@ -12,7 +12,7 @@ const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
 
 export default function AlbumDetails() {
-  const { currentTrackIdAS, setCurrentTrackIdAS, isPlayingAS } = useAlbumPlayerStore();
+  const { currentTrackIdAS, setCurrentTrackIdAS, isPlayingAS, setIsAlbumTrack } = useAlbumPlayerStore();
   const location = useLocation();
   const params = useParams();
   const AlbumId = params.albumId;
@@ -22,13 +22,11 @@ export default function AlbumDetails() {
   const [currentTrackId, setCurrentTrackId] = useState(null);
   const songsIds = songs.map(song => song.id);
   const iscurrentAlbumPlaying = songsIds.includes(currentTrackIdAS);
-  console.log(songsIds);
-  console.log("playing", isPlayingAS);
-  console.log("ctid", currentTrackIdAS);
-  
-  
-  
-  console.log(iscurrentAlbumPlaying);
+
+
+  useEffect(() => {
+    setIsAlbumTrack(iscurrentAlbumPlaying ? AlbumId : null);
+  }, [isPlayingAS])
   
   
  
@@ -43,7 +41,7 @@ export default function AlbumDetails() {
     fetchSongs();
     
     async function ga() {
-      if (!location.state.album) {
+      if (location.state.album) {
         setAlbum(location.state.album);
         return;
       }
@@ -96,8 +94,8 @@ export default function AlbumDetails() {
   };
   
   
-  function pauseSong(){
-    player.pause();
+  async function pauseSong(){
+    await player.pause();
   };
   
   
@@ -151,7 +149,7 @@ export default function AlbumDetails() {
             </div>
           </div>
   
-          <div className="col-span-8 px-6 py-4 overflow-y-auto pr-4 songs-list h-full">
+          <div className="col-span-8 pb-28 px-6 py-4 overflow-y-auto pr-4 songs-list h-full">
             {songs.map((song) => (
               <SongPlaylist
                 key={song.id}

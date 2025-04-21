@@ -15,12 +15,12 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong, is
 
   return (
     <div
-      className="p-2  text-white rounded-lg mb-3"
+      className="p-2 w-full text-white rounded-lg mb-3"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="song-playlist flex justify-between items-center relative">
-        <div className="flex gap-3 items-center relative">
+      <div className="song-playlist w-full flex justify-between items-center relative">
+        <div className="flex gap-3 w-[75%] items-center relative">
           <div className="relative">
             <img
               loading="lazy"
@@ -46,10 +46,10 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong, is
               ></i>
             )}
           </div>
-          <div className="song-playlist-info overflow-hidden">
+          <div className="song-playlist-info max-w-[100%] overflow-hidden">
             <h3 className="font-bold text-xl">{song.name}</h3>
             {song.artist.join(", ").length < 70 ? (
-              <p className="text-[#7F7676] font-semibold truncate">
+              <p className="text-[#7F7676] font-semibold">
               {song.artist?.map((artist, index) => (
                 <span key={`${song.songId}-${index}`}>
                   <span>
@@ -72,7 +72,7 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong, is
               ))}
             </p>
             ) : (
-              <p className="text-[#7F7676] animate-marqueeArtistName whitespace-nowrap hover:[animation-play-state:paused] font-semibold truncate">
+              <p className="text-[#7F7676] animate-marqueeArtistName whitespace-nowrap hover:[animation-play-state:paused] font-semibold">
               {song.artist?.map((artist, index) => (
                 <span key={`${song.songId}-${index}`}>
                   <span>

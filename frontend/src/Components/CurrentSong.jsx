@@ -14,7 +14,7 @@ export default function CurrentSong() {
 
   // ✅ Zustand reactive states
   const { currentTrackId, isPlaying, setIsPlaying } = usePlayerStore();
-  const { currentTrackIdAS, isPlayingAS, setIsPlayingAS, isAlbumTrack } = useAlbumPlayerStore();
+  const { currentTrackIdAS, isPlayingAS, setIsPlayingAS, isAlbumTrack, setCurrentTrackIdAS } = useAlbumPlayerStore();
 
   const formatTime = (sec) => {
     const minutes = Math.floor(sec / 60);
@@ -26,6 +26,7 @@ export default function CurrentSong() {
 
   const songDuration = formatTime(song?.duration / 1000 || 0);
   const currSongDuration = formatTime(position);
+  
 
   useEffect(() => {
     intervalRef.current = setInterval(async () => {
@@ -35,15 +36,27 @@ export default function CurrentSong() {
       const currentId = state.track_window.current_track.id;
       const isPaused = state.paused;
 
-      setPlaying(!isPaused);
-      setStateId(currentId);
+      if (playing !== !isPaused) {
+        setPlaying(!isPaused)
+      }
+
+      if (stateId !== currentId) {
+        setStateId(currentId);
+      }
+
+      if (currentTrackIdAS !== currentId) {
+        setCurrentTrackIdAS(currentId);
+      }
+
       setPosition(Math.floor(state.position / 1000));
 
       // Update Zustand only if needed
       if (currentId === currentTrackId && isPlaying !== !isPaused) {
         setIsPlaying(!isPaused);
+        setPlaying(!isPaused);
       } else if (currentId === currentTrackIdAS && isPlayingAS !== !isPaused) {
         setIsPlayingAS(!isPaused);
+        setPlaying(!isPaused);
       }
     }, 1000);
 
@@ -83,12 +96,12 @@ export default function CurrentSong() {
     }
   }
 
-  function pauseSong() {
+  async function pauseSong() {
     const isAlbum = isAlbumTrack && currentTrackIdAS === song?.songId;
     const isSingle = currentTrackId === song?.songId && !isAlbumTrack;
 
     if (isAlbum || isSingle) {
-      player.pause();
+      await player.pause();
     }
   }
 
@@ -102,17 +115,17 @@ export default function CurrentSong() {
     <>
       {song && (
         <div className="sticky bottom-0 left-0 right-0 max-h-24 bg-black text-white flex items-center justify-between w-full px-6 py-4 z-50 border-t-2 border-gray-700">
-          <div className="flex items-center w-1/4 max-w-1/4 overflow-hidden gap-x-8">
+          <div className="flex max-h-full items-center w-1/4 max-w-1/4 overflow-hidden gap-x-8">
             <img src={song.imageUrl} alt={song.name} className="size-16 rounded-lg" />
             <div className="current-song-info overflow-hidden">
-              <h3 className="text-lg font-bold">
+              <h3 className="text-lg font-bold max-h-12 truncate">
                 {song.name.length > 60 ? (
-                  <span className="inline-block animate-marqueeSongName hover:[animation-play-state:paused]">{song.name}</span>
+                  <span className="inline-block max-h-4 animate-marqueeSongName hover:[animation-play-state:paused]">{song.name}</span>
                 ) : (
                   song.name
                 )}
               </h3>
-              <p className="font-semibold truncate">
+              <p className="font-semibold truncate max-h-8">
                 {song.artists.map((artist, index) => (
                   <span key={`${song.songId}-${index}`}>
                     <span className="hover:text-[#7f7676]">
@@ -151,10 +164,21 @@ export default function CurrentSong() {
 
           <div className="flex items-center w-1/4 justify-end gap-4 mx-5">
             <input type="checkbox" className="size-5" />
+            
             {playing ? (
               <i className="fas fa-pause text-2xl cursor-pointer" onClick={pauseSong} />
             ) : (
               <i className="fas fa-play text-2xl cursor-pointer" onClick={resumeSong} />
+            )}
+            
+            {isAlbumTrack ? (
+              <Link to={`/album/${isAlbumTrack}`}>
+                <i className="fa-solid fa-angle-up"></i>
+              </Link>
+            ) : (
+              <Link to={`/song/${song.songId}`}>
+              <i className="fa-solid fa-angle-up"></i>
+            </Link>
             )}
           </div>
         </div>

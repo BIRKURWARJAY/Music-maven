@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import {
   fetchSongs,
-  fetchAlbum,
   fetchMovieSongs
 } from "../../features/AccessToken";
 import { useEffect, useState, useCallback, useRef } from "react";
@@ -22,7 +21,6 @@ export default function SearchBar() {
         const albumName = trimmedSearch.split("album:")[1]?.trim();
         if (albumName) {
           const album = await fetchMovieSongs(albumName);
-          console.log(album);
 
           setSongs([]);
           setAlbum(album);
@@ -42,7 +40,6 @@ export default function SearchBar() {
         const songs = await fetchSongs(trimmedSearch, 5, 1);
         setAlbum(null);
         setSongs(songs);
-        console.log("songs", songs);
         setPrevSearch(trimmedSearch);
       }
     },
@@ -87,7 +84,7 @@ export default function SearchBar() {
           placeholder="Search for songs, artists, albums, podcasts"
           className="rounded-lg p-3 w-full bg-white bg-opacity-5 backdrop-blur-lg text-slate-400 caret-slate-400 border-none outline-none focus:bg-slate-950 hover:bg-opacity-15"
           value={search}
-          onChange={(e) => setSearch(e.target.value.trim())}
+          onChange={(e) => setSearch(e.target.value)}
           ref={inputRef}
         />
        {songs.length > 0 && isFocused ? (

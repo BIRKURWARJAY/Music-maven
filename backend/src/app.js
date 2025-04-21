@@ -69,6 +69,7 @@ app.post("/api/refreshAccessToken", async (req, res) => {
 
     const data = await response.json();
     res.json(data);
+    
   } catch (err) {
     console.error("Error refreshing token", err);
     res.status(500).json({ error: "Failed to refresh token" });

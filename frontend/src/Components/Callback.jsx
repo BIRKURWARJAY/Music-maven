@@ -37,7 +37,7 @@ const Callback = () => {
   }, []);
   
 
-  return null; // Don't render anything
+  return null; 
 };
 
 export default Callback;

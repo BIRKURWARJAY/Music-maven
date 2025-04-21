@@ -8,7 +8,7 @@ const ArtistsAlbum = lazy(() => import("./ArtistsAlbum"));
 
 
 
-export const isLoggedIn = await fetchAccessToken() ? true : false;
+export const isLoggedIn = localStorage.getItem("accessToken") ? true : false;
 
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <> 
-      <div className="flex flex-col gap-y-8">
+      <div className="flex flex-col pb-28 gap-y-8">
         <Genres />
         <TrendingSongsList />
         <ArtistsAlbum />

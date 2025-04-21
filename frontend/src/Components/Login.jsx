@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import { UserCreatedPopup } from "./UserCreatedPopup";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 //function to redirect to Spotify authorization page
 export const redirectToSpotifyAuth = () => {
@@ -16,14 +15,13 @@ export const redirectToSpotifyAuth = () => {
     "user-modify-playback-state",
     "user-read-playback-state"
   ].join("%20");
-  const url = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}&show_dialog=true`;
+  const url = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${REDIRECT_URI}&scope=${SCOPES}&show_dialog=false`;
   window.location.href = url;
 };
 
 
 export default function Login() {
   const location = useLocation();
-  const navigate = useNavigate();
   const message = location.state?.message || null;
 
   const [userDetails, setUserDetails] = useState({
