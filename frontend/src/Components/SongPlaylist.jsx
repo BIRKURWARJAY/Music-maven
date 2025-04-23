@@ -6,14 +6,14 @@ import useCurrentSongStore from "../../app/currentSongStore";
 
 
 
-export default function SongPlaylist({ song, duration, resumeSong, pauseSong, isPlaying}) {
+export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
   const [isHovered, setIsHovered] = useState(false);
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
-  const { currentSong } = useCurrentSongStore();
+  const { currentSongId, isPlaying } = useCurrentSongStore();
   
-  const isCurrentSongPlaying = currentSong === song.songId && isPlaying;  
+  const isCurrentSongPlaying = currentSongId === song.songId && isPlaying;  
   
 
   return (

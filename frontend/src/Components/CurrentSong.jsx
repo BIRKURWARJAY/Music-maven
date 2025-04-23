@@ -3,20 +3,14 @@ import { useEffect, useState, useRef } from "react";
 import sendId from "../../features/songId";
 import { player } from "./SongDetails";
 import { fetchSongById } from "../../features/AccessToken";
-import usePlayerStore from "../../app/playerStore";
-import useAlbumPlayerStore from "../../app/albumPlayerStore";
 import useCurrentSongStore from "../../app/currentSongStore";
 
 export default function CurrentSong() {
   const [song, setSong] = useState(null);
-  const [position, setPosition] = useState(0);
   const intervalRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
 
   // ✅ Zustand reactive states
-  const { isPlaying, setIsPlaying, setCurrentArtistId } = usePlayerStore();
-  const { isPlayingAS, setIsPlayingAS, currentAlbumId, setCurrentAlbumId } = useAlbumPlayerStore();
-  const { currentSong, setCurrentSong } = useCurrentSongStore();
+  const { currentSongId, setCurrentSongId, isPlaying, setIsPlaying, setCurrentArtistId,currentAlbumId, setCurrentAlbumId, currentPosition, setCurrentPosition } = useCurrentSongStore();
 
   const formatTime = (sec) => {
     const minutes = Math.floor(sec / 60);
@@ -27,7 +21,7 @@ export default function CurrentSong() {
   };
 
   const songDuration = formatTime(song?.duration / 1000 || 0);
-  const currSongDuration = formatTime(position);
+  const currSongDuration = formatTime(currentPosition);
   
 
 
@@ -50,17 +44,15 @@ export default function CurrentSong() {
 
       if (!isPaused) {
         setIsPlaying(true);
-        setIsPlayingAS(true);
       }
 
       if (isPaused) {
         setIsPlaying(false);
-        setIsPlayingAS(false);
       }
 
     })();
 
-  }, [currentSong, playing])
+  }, [currentSongId, isPlaying])
 
 
   useEffect(() => {
@@ -76,28 +68,27 @@ export default function CurrentSong() {
 
       const isPaused = state.paused;
 
-      if (playing !== !isPaused) {
-        setPlaying(!isPaused)
+      if (isPlaying !== !isPaused) {
+        setIsPlaying(!isPaused)
       }      
 
-      if (currentId !== currentSong) {
-        setCurrentSong(currentId);
+      if (currentId !== currentSongId) {
+        setCurrentSongId(currentId);
       }
 
-
-      setPosition(Math.floor(state.position / 1000));
+      setCurrentPosition(Math.floor(state.position / 1000));
 
     }, 1000);
 
     return () => clearInterval(intervalRef.current);
-  }, [isPlaying, isPlayingAS]);
+  }, [isPlaying]);
 
 
   useEffect(() => {
-    if (!currentSong) return;
+    if (!currentSongId) return;
 
     async function getSongInfo() {
-      const song = await fetchSongById(currentSong);
+      const song = await fetchSongById(currentSongId);
       if (!song) return;
 
       const formatted = {
@@ -111,26 +102,25 @@ export default function CurrentSong() {
       };
 
       setSong(formatted);
-      setPosition(0);
     }
 
     getSongInfo();
-  }, [currentSong]);
+  }, [currentSongId]);
+  
 
   async function resumeSong() {
     await player.resume();
-    setPlaying(false);
+    setIsPlaying(false);
   }
 
   async function pauseSong() {
     await player.pause();
-    setPlaying(true);
+    setIsPlaying(true);
   }
 
-  function seek(value) {
-    const ms = value * 1000;
-    player.seek(ms);
-    setPosition(Number(value));
+  async function seek(value) {
+    await player.seek(value * 1000);
+    setCurrentPosition(Number(value));
   }
 
   return (
@@ -174,7 +164,7 @@ export default function CurrentSong() {
               className="slider max-w-2/4 w-2/4"
               min={0}
               max={Math.floor((song.duration || 0) / 1000)}
-              value={position}
+              value={currentPosition}
               onChange={(e) => seek(Number(e.target.value))}
             />
             <div className="flex gap-8 w-2/4 justify-center">
@@ -187,12 +177,12 @@ export default function CurrentSong() {
           <div className="flex items-center w-1/4 justify-end gap-4 mx-5">
             <input type="checkbox" className="size-5" />
             
-            {playing ? (
+            {isPlaying ? (
               <i className="fas fa-pause text-2xl cursor-pointer" onClick={pauseSong} />
             ) : (
               <i className="fas fa-play text-2xl cursor-pointer" onClick={resumeSong} />
             )}
-            {isPlayingAS ? (
+            {isPlaying ? (
               <Link to={`/album/${currentAlbumId}`}>
                 <i className="fa-solid fa-angle-up"></i>
               </Link>

@@ -3,7 +3,6 @@ import { lazy, useState, useEffect } from "react";
 import { playAlbumById, playSongById } from "../../index";
 import { fetchAlbumsTracks, fetchAlbumById } from "../../features/AccessToken"
 import { player } from "./SongDetails"
-import useAlbumPlayerStore from "../../app/albumPlayerStore"
 import useCurrentSongStore from "../../app/currentSongStore";
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
@@ -12,8 +11,7 @@ const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
 
 export default function AlbumDetails() {
-  const { isPlayingAS, setIsAlbumTrack, setCurrentAlbumId } = useAlbumPlayerStore();
-  const { currentSong } = useCurrentSongStore();
+  const { currentSongId, isPlaying, setCurrentAlbumId } = useCurrentSongStore();
   const location = useLocation();
   const params = useParams();
   const AlbumId = params.albumId;
@@ -21,12 +19,12 @@ export default function AlbumDetails() {
   const [album, setAlbum] = useState(null);
   const [songs, setSongs] = useState([]); 
   const songsIds = songs.map(song => song.id);
-  const iscurrentAlbumPlaying = songsIds.includes(currentSong);
+  const iscurrentAlbumPlaying = songsIds.includes(currentSongId);
 
 
   useEffect(() => {
-    setIsAlbumTrack(iscurrentAlbumPlaying ? AlbumId : null);
-  }, [isPlayingAS])
+    setCurrentAlbumId(iscurrentAlbumPlaying ? AlbumId : null);
+  }, [isPlaying])
   
   
  
@@ -74,7 +72,7 @@ export default function AlbumDetails() {
   
   async function resumeSong(songId) {
  
-    if (currentSong === songId) {
+    if (currentSongId === songId) {
       player.resume()
     } else if (songId) {
       playSongById(songId); 
@@ -123,7 +121,7 @@ export default function AlbumDetails() {
                 className="fa-regular fa-square-plus px-3 py-2 rounded-full bg-white bg-opacity-5 text-xl"
                 title="Add all to Playlist"
               ></i>
-              {iscurrentAlbumPlaying && isPlayingAS ? (
+              {iscurrentAlbumPlaying && isPlaying ? (
                   <i
                     className="fa-solid fa-pause px-8 py-6 bg-white rounded-full text-black text-2xl"
                     onClick={pauseSong}
@@ -156,8 +154,6 @@ export default function AlbumDetails() {
                 }}
                 resumeSong={resumeSong}
                 pauseSong={pauseSong}
-                currentTrackId={currentSong}
-                isPlaying={isPlayingAS}
               />
             ))}
           </div>

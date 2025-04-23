@@ -2,8 +2,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { lazy, useState, useEffect, memo, useRef } from "react";
 import sendId from "../../features/songId";
 import { playSongById } from "../../index";
-import { fetchSongById, accessToken } from "../../features/AccessToken";
-import usePlayerStore from "../../app/playerStore";
+import { fetchSongById } from "../../features/AccessToken";
 import useCurrentSongStore from "../../app/currentSongStore";
 
 export const player = window.onSpotifyWebPlaybackSDKReady();
@@ -14,18 +13,12 @@ function SongDetails() {
   const params = useParams();
   const songId = params.songId;
   const location = useLocation();
-  const {
-    isPlaying,
-    currentArtistId,
-    setCurrentArtistId
-  } = usePlayerStore();
-
-  const { currentSong } = useCurrentSongStore();
+  const { currentSongId, isPlaying, setCurrentArtistId } = useCurrentSongStore();
   
   const [song, setSong] = useState(null);
   const recoRef = useRef();
   
-  const isCurrentSongPlaying = isPlaying && currentSong === songId;
+  const isCurrentSongPlaying = isPlaying && currentSongId === songId;
 
   /////////////////////////////work on autoplay tracks after one finished by setting an array of tracks;
 
@@ -57,7 +50,7 @@ function SongDetails() {
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
 
   async function resumeSong(songId) {
-    if (currentSong === songId) {
+    if (currentSongId === songId) {
       await player.resume();
     } else {
       sendId(song.name);
@@ -128,7 +121,6 @@ function SongDetails() {
               duration={songDuration}
               resumeSong={resumeSong}
               pauseSong={pauseSong}
-              isPlaying={isPlaying}
             />
           </div>
         </div>
