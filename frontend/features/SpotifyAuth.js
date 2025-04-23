@@ -16,6 +16,7 @@ const useSpotifyAuth = () => {
       }
 
       if (Date.now() >= tokenExpiry) {
+        console.log("refreshing access token");        
         try {
           const res = await fetch("/api/refreshAccessToken", {
             method: "POST",
@@ -26,7 +27,7 @@ const useSpotifyAuth = () => {
           const data = await res.json();
 
           if (data.access_token) {
-            const expiry = Date.now() + data.expires_in * 1000 - 60 * 1000;
+            const expiry = Date.now() + data.expires_in * 1000 - ( 60 * 1000);
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("tokenExpiry", expiry.toString());
             console.log("ACCESS TOKEN REFRESHED");
@@ -44,11 +45,11 @@ const useSpotifyAuth = () => {
     checkAndRefreshToken();
 
     // Set up interval to refresh every 59 minutes
-    const interval = setInterval(checkAndRefreshToken, 59 * 60 * 1000);
+    const interval = setInterval(checkAndRefreshToken, 59 * 60 * 1000 + 1000);
 
     // Cleanup on unmount
     return () => clearInterval(interval);
-  }, [navigate]);
+  }, []);
 };
 
 export default useSpotifyAuth;

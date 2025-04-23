@@ -10,7 +10,7 @@ export const fetchAccessToken = async () => {
   }
 };
 
-const accessToken = await fetchAccessToken()
+export const accessToken = await fetchAccessToken()
 
 //function that fetch the demanded songs
 export const fetchSongs = async (query, limit = 20) => {

@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
+import sendId from "../../features/songId";
 import { player } from "./SongDetails";
 import { fetchSongById } from "../../features/AccessToken";
 import usePlayerStore from "../../app/playerStore";
 import useAlbumPlayerStore from "../../app/albumPlayerStore";
+import useCurrentSongStore from "../../app/currentSongStore";
 
 export default function CurrentSong() {
   const [song, setSong] = useState(null);
   const [position, setPosition] = useState(0);
   const intervalRef = useRef(null);
-  const [stateId, setStateId] = useState(null);
   const [playing, setPlaying] = useState(false);
 
   // ✅ Zustand reactive states
-  const { currentTrackId, isPlaying, setIsPlaying } = usePlayerStore();
-  const { currentTrackIdAS, isPlayingAS, setIsPlayingAS, isAlbumTrack, setCurrentTrackIdAS } = useAlbumPlayerStore();
+  const { isPlaying, setIsPlaying, setCurrentArtistId } = usePlayerStore();
+  const { isPlayingAS, setIsPlayingAS, currentAlbumId, setCurrentAlbumId } = useAlbumPlayerStore();
+  const { currentSong, setCurrentSong } = useCurrentSongStore();
 
   const formatTime = (sec) => {
     const minutes = Math.floor(sec / 60);
@@ -28,46 +30,74 @@ export default function CurrentSong() {
   const currSongDuration = formatTime(position);
   
 
+
   useEffect(() => {
-    intervalRef.current = setInterval(async () => {
+    (async () => {
       const state = await player.getCurrentState();
       if (!state) return;
 
+      const isPaused = state.paused;
+
+      if (!state.context.uri.includes("album:")) {
+        const currArtId = state?.track_window.current_track.artists[0].uri?.split("artist:")[1];
+
+        console.log(currArtId, "currArtId");
+      
+        setCurrentArtistId(currArtId);
+      }
+    
+      sendId(state.track_window.current_track.name);
+
+      if (!isPaused) {
+        setIsPlaying(true);
+        setIsPlayingAS(true);
+      }
+
+      if (isPaused) {
+        setIsPlaying(false);
+        setIsPlayingAS(false);
+      }
+
+    })();
+
+  }, [currentSong, playing])
+
+
+  useEffect(() => {
+    intervalRef.current = setInterval(async () => {
+
+      const state = await player.getCurrentState();
+      if (!state) return;
       const currentId = state.track_window.current_track.id;
+      
+      if (state?.context.uri.includes("album:") && currentAlbumId !== state.context.uri.split("album:")[1]) {
+        setCurrentAlbumId(state.context.uri.split("album:")[1]);
+      }
+
       const isPaused = state.paused;
 
       if (playing !== !isPaused) {
         setPlaying(!isPaused)
+      }      
+
+      if (currentId !== currentSong) {
+        setCurrentSong(currentId);
       }
 
-      if (stateId !== currentId) {
-        setStateId(currentId);
-      }
-
-      if (currentTrackIdAS !== currentId) {
-        setCurrentTrackIdAS(currentId);
-      }
 
       setPosition(Math.floor(state.position / 1000));
 
-      // Update Zustand only if needed
-      if (currentId === currentTrackId && isPlaying !== !isPaused) {
-        setIsPlaying(!isPaused);
-        setPlaying(!isPaused);
-      } else if (currentId === currentTrackIdAS && isPlayingAS !== !isPaused) {
-        setIsPlayingAS(!isPaused);
-        setPlaying(!isPaused);
-      }
     }, 1000);
 
     return () => clearInterval(intervalRef.current);
-  }, [currentTrackId, currentTrackIdAS, isPlaying, isPlayingAS]);
+  }, [isPlaying, isPlayingAS]);
+
 
   useEffect(() => {
-    if (!stateId) return;
+    if (!currentSong) return;
 
     async function getSongInfo() {
-      const song = await fetchSongById(stateId);
+      const song = await fetchSongById(currentSong);
       if (!song) return;
 
       const formatted = {
@@ -85,24 +115,16 @@ export default function CurrentSong() {
     }
 
     getSongInfo();
-  }, [stateId]);
+  }, [currentSong]);
 
   async function resumeSong() {
-    const isAlbum = isAlbumTrack && currentTrackIdAS === song?.songId;
-    const isSingle = currentTrackId === song?.songId && !isAlbumTrack;
-
-    if (isAlbum || isSingle) {
-      await player.resume();
-    }
+    await player.resume();
+    setPlaying(false);
   }
 
   async function pauseSong() {
-    const isAlbum = isAlbumTrack && currentTrackIdAS === song?.songId;
-    const isSingle = currentTrackId === song?.songId && !isAlbumTrack;
-
-    if (isAlbum || isSingle) {
-      await player.pause();
-    }
+    await player.pause();
+    setPlaying(true);
   }
 
   function seek(value) {
@@ -170,9 +192,8 @@ export default function CurrentSong() {
             ) : (
               <i className="fas fa-play text-2xl cursor-pointer" onClick={resumeSong} />
             )}
-            
-            {isAlbumTrack ? (
-              <Link to={`/album/${isAlbumTrack}`}>
+            {isPlayingAS ? (
+              <Link to={`/album/${currentAlbumId}`}>
                 <i className="fa-solid fa-angle-up"></i>
               </Link>
             ) : (

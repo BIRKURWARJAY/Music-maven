@@ -3,9 +3,9 @@ import { create } from 'zustand';
 
 const usePlayerStore = create((set) => ({
   isPlaying: false,
-  currentTrackId: null,
+  currentArtistId: null,
   setIsPlaying: (value) => set({ isPlaying: value }),
-  setCurrentTrackId: (id) => set({ currentTrackId: id }),
+  setCurrentArtistId: (id) => set({ currentArtistId: id })
 }));
 
 export default usePlayerStore;

@@ -1,34 +1,39 @@
 import { useLocation, useParams } from "react-router-dom";
-import { lazy, useState, useEffect, memo } from "react";
+import { lazy, useState, useEffect, memo, useRef } from "react";
 import sendId from "../../features/songId";
 import { playSongById } from "../../index";
-import { fetchSongById } from "../../features/AccessToken";
+import { fetchSongById, accessToken } from "../../features/AccessToken";
 import usePlayerStore from "../../app/playerStore";
+import useCurrentSongStore from "../../app/currentSongStore";
 
 export const player = window.onSpotifyWebPlaybackSDKReady();
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
-
-
-
 function SongDetails() {
   const params = useParams();
   const songId = params.songId;
   const location = useLocation();
-  const { setCurrentTrackId, isPlaying, currentTrackId } = usePlayerStore();
+  const {
+    isPlaying,
+    currentArtistId,
+    setCurrentArtistId
+  } = usePlayerStore();
 
-  const [song, setSong] = useState(null);  
-  console.log("kjhdiugj");
+  const { currentSong } = useCurrentSongStore();
   
+  const [song, setSong] = useState(null);
+  const recoRef = useRef();
+  
+  const isCurrentSongPlaying = isPlaying && currentSong === songId;
 
-  const isCurrentSongPlaying = isPlaying && currentTrackId === songId;
-
+  /////////////////////////////work on autoplay tracks after one finished by setting an array of tracks;
 
   useEffect(() => {
     async function loadSongDetails() {
       if (location?.state?.song) {
         setSong(location.state.song);
+        setCurrentArtistId(location.state.song.artistId[0]);
         return;
       }
       const fs = await fetchSongById(songId);
@@ -39,26 +44,23 @@ function SongDetails() {
         artist: fs?.artists?.map((artist) => artist.name),
         release: fs?.album?.release_date,
         duration: fs?.duration_ms,
-        artistId: fs?.artists?.map((artist) => artist.id),
+        artistId: fs?.artists?.map((artist) => artist.id)
       };
       setSong(fetchedSong);
-    }    
+      setCurrentArtistId(song.artistId[0]);
+    }
     loadSongDetails();
   }, [songId]);
 
-
-  
   const songMin = Math.floor(song?.duration / 60000);
   const songSec = ((song?.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
 
   async function resumeSong(songId) {
-
-    if (currentTrackId === songId) {
-      player.resume();
+    if (currentSong === songId) {
+      await player.resume();
     } else {
-      sendId(songId);
-      setCurrentTrackId(songId);
+      sendId(song.name);
       playSongById(songId);
     }
   }
@@ -76,11 +78,15 @@ function SongDetails() {
               loading="lazy"
               src={song.imageUrl}
               alt=""
-              className="w-full"
+              className="size-[100%] rounded-xl"
             />
-            <h1 className="text-2xl font-bold truncate">
+            <h1 className="text-2xl max-w-full font-bold truncate">
               {song.name?.length > 50 ? (
-                <marquee behavior="alternate" scrollamount="5" scrolldelay="100">
+                <marquee
+                  behavior="alternate"
+                  scrollamount="5"
+                  scrolldelay="100"
+                >
                   {song.name}
                 </marquee>
               ) : (
@@ -102,9 +108,9 @@ function SongDetails() {
                 <i
                   className="fa-solid fa-pause cursor-pointer px-8 py-6 bg-white rounded-full text-black text-2xl"
                   onClick={pauseSong}
-                  ></i>
-                ) : (
-                  <i
+                ></i>
+              ) : (
+                <i
                   className="fa-solid fa-play cursor-pointer px-8 py-6 bg-white rounded-full text-black text-2xl"
                   onClick={() => resumeSong(songId)}
                 ></i>
@@ -122,7 +128,6 @@ function SongDetails() {
               duration={songDuration}
               resumeSong={resumeSong}
               pauseSong={pauseSong}
-              currentTrackId={currentTrackId}
               isPlaying={isPlaying}
             />
           </div>
@@ -133,6 +138,5 @@ function SongDetails() {
     </div>
   );
 }
-
 
 export default memo(SongDetails);

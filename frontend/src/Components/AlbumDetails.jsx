@@ -1,10 +1,10 @@
 import { useLocation, useParams } from "react-router-dom";
 import { lazy, useState, useEffect } from "react";
-import sendId from "../../features/songId";
 import { playAlbumById, playSongById } from "../../index";
 import { fetchAlbumsTracks, fetchAlbumById } from "../../features/AccessToken"
 import { player } from "./SongDetails"
 import useAlbumPlayerStore from "../../app/albumPlayerStore"
+import useCurrentSongStore from "../../app/currentSongStore";
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
@@ -12,16 +12,16 @@ const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
 
 export default function AlbumDetails() {
-  const { currentTrackIdAS, setCurrentTrackIdAS, isPlayingAS, setIsAlbumTrack } = useAlbumPlayerStore();
+  const { isPlayingAS, setIsAlbumTrack, setCurrentAlbumId } = useAlbumPlayerStore();
+  const { currentSong } = useCurrentSongStore();
   const location = useLocation();
   const params = useParams();
   const AlbumId = params.albumId;
   
   const [album, setAlbum] = useState(null);
   const [songs, setSongs] = useState([]); 
-  const [currentTrackId, setCurrentTrackId] = useState(null);
   const songsIds = songs.map(song => song.id);
-  const iscurrentAlbumPlaying = songsIds.includes(currentTrackIdAS);
+  const iscurrentAlbumPlaying = songsIds.includes(currentSong);
 
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function AlbumDetails() {
     fetchSongs();
     
     async function ga() {
-      if (location.state.album) {
+      if (location?.state?.album) {
         setAlbum(location.state.album);
         return;
       }
@@ -63,10 +63,6 @@ export default function AlbumDetails() {
 
   }, [AlbumId])
 
-
-  async function x() {
-    setCurrentTrackId(songsIds.at(0));
-  }
   
   
   const totalDurationMs = songs.reduce((acc, song) => acc + song.duration_ms, 0);
@@ -78,18 +74,15 @@ export default function AlbumDetails() {
   
   async function resumeSong(songId) {
  
-    if (currentTrackIdAS === songId) {
+    if (currentSong === songId) {
       player.resume()
     } else if (songId) {
       playSongById(songId); 
-      setCurrentTrackIdAS(songId);
-      sendId(songId);
+      setCurrentAlbumId(AlbumId);
     } else if (iscurrentAlbumPlaying) {
       player.resume();
     } else {
       playAlbumById(AlbumId);
-      setCurrentTrackIdAS(currentTrackId);
-      sendId(currentTrackId);
     }
   };
   
@@ -104,15 +97,15 @@ export default function AlbumDetails() {
     <>
       {album ? (
         <div className="mx-28 mt-28 grid grid-cols-12 bg-transparent gap-x-20 h-[calc(100vh-7rem)] max-h[calc(100vh - 80px)] overflow-hidden">
-          <div className="col-span-4 px-6 py-4 w-[80%] max-h-[400px] items-center text-white gap-y-3 flex flex-col sticky top-0 left-12">
+          <div className="col-span-4 px-6 py-4 w-[80%] items-center text-white flex flex-col gap-y-3 sticky top-0 left-12">
             <img
               loading="lazy"
               src={album.imageUrl}
               alt=""
               className="w-full rounded-xl"
             />
-            <h1 className="text-2xl font-bold text-center w-full">
-              {album.name.length > 50 ? (
+            <h1 className="text-2xl font-bold max-w-[100%] truncate text-center w-full">
+              {album.name.length > 40 ? (
                 <marquee behavior="alternate" scrollamount="5" scrolldelay="100">
                   {album.name}
                 </marquee>
@@ -139,7 +132,6 @@ export default function AlbumDetails() {
                     <i
                     className="fa-solid cursor-pointer fa-play px-8 py-6 bg-white rounded-full text-black text-2xl"
                     onClick={() => resumeSong()}
-                    onMouseOver={() => x()}
                   ></i>
                 )}
               <i
@@ -164,7 +156,7 @@ export default function AlbumDetails() {
                 }}
                 resumeSong={resumeSong}
                 pauseSong={pauseSong}
-                currentTrackId={currentTrackIdAS}
+                currentTrackId={currentSong}
                 isPlaying={isPlayingAS}
               />
             ))}

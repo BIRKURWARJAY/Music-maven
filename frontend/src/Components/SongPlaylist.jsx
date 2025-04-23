@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import sendId from "../../features/songId";
+import useCurrentSongStore from "../../app/currentSongStore";
 
 
 
 
-export default function SongPlaylist({ song, duration, resumeSong, pauseSong, isPlaying,  currentTrackId}) {
+export default function SongPlaylist({ song, duration, resumeSong, pauseSong, isPlaying}) {
   const [isHovered, setIsHovered] = useState(false);
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
+  const { currentSong } = useCurrentSongStore();
   
-  const isCurrentSongPlaying = currentTrackId === song.songId && isPlaying;  
+  const isCurrentSongPlaying = currentSong === song.songId && isPlaying;  
   
 
   return (
@@ -33,6 +36,7 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong, is
                 className="fa-solid fa-play text-xl absolute inset-0 flex items-center justify-center text-white"
                 onClick={() => {
                   resumeSong(song.songId);
+                  sendId(song.name);
                 }}
               ></i>
             )}

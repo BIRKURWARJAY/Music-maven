@@ -28,26 +28,26 @@ const getAccessToken = async () => {
   const data = await response.json();
   
   accessToken = data.access_token;
-  tokenExpiryTime = Date.now() + data.expires_in * 1000; // expires_in is in seconds
+  tokenExpiryTime = Date.now() + data.expires_in * 1000;
 
   console.log("✅ Spotify access token refreshed");
 
   return accessToken;
 };
 
-setInterval(async () => {
-  await getValidAccessToken()
-}, 55 * 60 * 1000);
 
 // Public function to always get a valid token
 const getValidAccessToken = async () => {
   if (!accessToken || Date.now() >= tokenExpiryTime - 60 * 1000) {
-    // Token expired or about to expire in 60s
     return await getAccessToken();
   }
-
+  
   return accessToken;
 };
+
+setInterval(async () => {
+  await getValidAccessToken()
+}, 59 * 60 * 1000);
 
 
 export default getValidAccessToken;
