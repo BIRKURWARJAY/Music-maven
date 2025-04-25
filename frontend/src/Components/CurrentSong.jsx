@@ -8,9 +8,9 @@ import useCurrentSongStore from "../../app/currentSongStore";
 export default function CurrentSong() {
   const [song, setSong] = useState(null);
   const intervalRef = useRef(null);
+  const currentSongIdRef = useRef(null);
 
-  // ✅ Zustand reactive states
-  const { currentSongId, setCurrentSongId, isPlaying, setIsPlaying, setCurrentArtistId,currentAlbumId, setCurrentAlbumId, currentPosition, setCurrentPosition } = useCurrentSongStore();
+  const { currentSongId, setCurrentSongId, isPlaying, setIsPlaying, setCurrentArtistId, currentAlbumId, setCurrentAlbumId, currentPosition, setCurrentPosition } = useCurrentSongStore();
 
   const formatTime = (sec) => {
     const minutes = Math.floor(sec / 60);
@@ -24,35 +24,47 @@ export default function CurrentSong() {
   const currSongDuration = formatTime(currentPosition);
   
 
+  useEffect(() => {
+
+    const playerState = ({ paused }) => {
+      if (!paused) {
+        setIsPlaying(true);
+      }
+
+      if (paused) {
+        setIsPlaying(false);
+      }
+    }
+
+    player.addListener('player_state_changed', playerState);
+
+    return () => {
+      player.removeListener('player_state_changed', playerState);
+    }
+  }, [])
+
 
   useEffect(() => {
     (async () => {
       const state = await player.getCurrentState();
       if (!state) return;
 
-      const isPaused = state.paused;
 
-      if (!state.context.uri.includes("album:")) {
+      if (!state?.context.uri.includes("album:")) {
         const currArtId = state?.track_window.current_track.artists[0].uri?.split("artist:")[1];
 
+        setCurrentAlbumId(null);
         console.log(currArtId, "currArtId");
-      
+        
         setCurrentArtistId(currArtId);
       }
+      console.log(state.track_window.current_track.name);
     
       sendId(state.track_window.current_track.name);
 
-      if (!isPaused) {
-        setIsPlaying(true);
-      }
-
-      if (isPaused) {
-        setIsPlaying(false);
-      }
-
     })();
 
-  }, [currentSongId, isPlaying])
+  }, [currentSongId])
 
 
   useEffect(() => {
@@ -63,17 +75,13 @@ export default function CurrentSong() {
       const currentId = state.track_window.current_track.id;
       
       if (state?.context.uri.includes("album:") && currentAlbumId !== state.context.uri.split("album:")[1]) {
-        setCurrentAlbumId(state.context.uri.split("album:")[1]);
+        setCurrentAlbumId(state.context.uri.split("album:")[1]);        
       }
 
-      const isPaused = state.paused;
 
-      if (isPlaying !== !isPaused) {
-        setIsPlaying(!isPaused)
-      }      
-
-      if (currentId !== currentSongId) {
+      if (currentId !== (currentSongId || currentSongIdRef.current)) {
         setCurrentSongId(currentId);
+        currentSongIdRef.current = currentId;
       }
 
       setCurrentPosition(Math.floor(state.position / 1000));
@@ -182,7 +190,7 @@ export default function CurrentSong() {
             ) : (
               <i className="fas fa-play text-2xl cursor-pointer" onClick={resumeSong} />
             )}
-            {isPlaying ? (
+            {isPlaying && currentAlbumId ? (
               <Link to={`/album/${currentAlbumId}`}>
                 <i className="fa-solid fa-angle-up"></i>
               </Link>

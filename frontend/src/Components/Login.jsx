@@ -10,6 +10,7 @@ export const redirectToSpotifyAuth = () => {
   const REDIRECT_URI = "http://localhost:5173/callback";
   const SCOPES = [
     "streaming",
+    "user-library-read",
     "user-read-email",
     "user-read-private",
     "user-modify-playback-state",
@@ -59,8 +60,8 @@ export default function Login() {
             email: "",
             password: ""
           });
+          redirectToSpotifyAuth();
         }
-        redirectToSpotifyAuth();
       })
       .catch((err) => {
         if (err.response) {

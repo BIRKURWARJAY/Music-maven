@@ -99,7 +99,7 @@ app.post("/api/login", loginUser)
 
 
 //Logging out user
-app.get("/api/logout", logoutUser)
+app.post("/api/logout", logoutUser)
 
 
 

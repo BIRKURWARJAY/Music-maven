@@ -88,9 +88,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
 const logoutUser = asyncHandler(async (req, res) => {
-
-  
-
   res
   .status(200)
   .clearCookie("user")
@@ -98,6 +95,9 @@ const logoutUser = asyncHandler(async (req, res) => {
     message: "User logged out successfully",
     success: true
   })
+    .then(
+      console.log("user Logged Out Successfully")      
+  )
 })
 
 

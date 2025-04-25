@@ -3,6 +3,7 @@ import axios from "axios";
 export const fetchAccessToken = async () => {
   try {
     const res = await axios.get("/api/generalToken");
+    
     return res.data.accessToken;
   } catch (err) {
     console.error(" error accessing token");
@@ -11,6 +12,7 @@ export const fetchAccessToken = async () => {
 };
 
 export const accessToken = await fetchAccessToken()
+console.log(accessToken);
 
 //function that fetch the demanded songs
 export const fetchSongs = async (query, limit = 20) => {
@@ -38,14 +40,12 @@ export const fetchSongs = async (query, limit = 20) => {
   }
 };
 
-
-
 //function that fetch the demanded album;
-export const fetchAlbum = async (query, limit = 20) => {
+export const fetchAlbum = async (query, limit = 20, offset = 0) => {
   try {
     if (accessToken) {
       const response = await fetch(
-        `https://api.spotify.com/v1/search?q=${query}&type=album&limit=${limit}&offset=10`,
+        `https://api.spotify.com/v1/search?q=${query}&type=album&limit=${limit}&offset=${offset}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -56,33 +56,6 @@ export const fetchAlbum = async (query, limit = 20) => {
       
       let song = data.albums.items;
       
-      return song;
-    } else {
-      return "access Token Expired";
-    }
-
-  } catch (error) {
-    console.error("Error fetching songs", error);
-    return error;
-  }
-};
-
-
-//function that fetch the demanded movie songs;
-export const fetchMovieSongs = async (query) => {
-  try {
-    if (accessToken && query.trim().length > 0) {
-      const response = await fetch(
-        `https://api.spotify.com/v1/search?q=${query}&type=album&limit=1`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
-      );
-      const data = await response.json();
-      
-      let song = data.albums.items;      
       return song;
     } else {
       return "access Token Expired";
@@ -181,3 +154,64 @@ export const fetchAlbumById = async (albumId) => {
     return null;
   }
 } 
+
+
+//function that fetch tracks based on genre;
+export const fetchTracksByGenre = async (genre) => {
+  try {
+    if (!accessToken) {
+      console.warn("⚠️ Access Token Expired or Missing");
+      return null;
+    }
+    
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?q=genre:${genre}&type=track`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Spotify API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();      
+    
+    return data;
+  } catch (error) {
+    console.error("❌ Error fetching tracks by Genre:::", error);
+    return null;
+  }
+}
+
+//fetch Tracks from artist id;
+export const fetchTracksByArtistId = async (artistId) => {
+  try {
+    if (!accessToken) {
+      console.warn("⚠️ Access Token Expired or Missing");
+      return null;
+    }
+    
+    const response = await fetch(
+      `https://api.spotify.com/v1/artists/${artistId}/top-tracks`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Spotify API error: ${response.statusText}`);
+    }
+
+    const data = await response.json();      
+    
+    return data;
+  } catch (error) {
+    console.error("❌ Error fetching tracks by Genre:::", error);
+    return null;
+  }
+}

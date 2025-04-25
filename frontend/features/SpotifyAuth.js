@@ -11,11 +11,11 @@ const useSpotifyAuth = () => {
       const tokenExpiry = parseInt(localStorage.getItem("tokenExpiry") || "0", 10);
 
       if (!refreshToken || !accessToken) {
-        navigate("/login");
         return;
       }
 
-      if (Date.now() >= tokenExpiry) {
+      // Check if tokenExpiry is a valid timestamp before doing the comparison
+      if (tokenExpiry && Date.now() >= tokenExpiry) {
         console.log("refreshing access token");        
         try {
           const res = await fetch("/api/refreshAccessToken", {
@@ -27,12 +27,13 @@ const useSpotifyAuth = () => {
           const data = await res.json();
 
           if (data.access_token) {
-            const expiry = Date.now() + data.expires_in * 1000 - ( 60 * 1000);
+            const expiry = Date.now() + data.expires_in * 1000 - (60 * 1000);
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("tokenExpiry", expiry.toString());
             console.log("ACCESS TOKEN REFRESHED");
           } else {
             navigate("/login");
+            console.log("Access Token Expired OR Not Found");            
           }
         } catch (err) {
           console.error("Token refresh error:", err);

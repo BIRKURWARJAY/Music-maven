@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   fetchSongs,
-  fetchMovieSongs
+  fetchAlbum
 } from "../../features/AccessToken";
 import { useEffect, useState, useCallback, useRef } from "react";
 
@@ -19,12 +19,12 @@ export default function SearchBar() {
 
       if (trimmedSearch.toLowerCase().startsWith("album:")) {
         const albumName = trimmedSearch.split("album:")[1]?.trim();
-        if (albumName) {
-          const album = await fetchMovieSongs(albumName);
+        if (albumName !== prevSearch) {
+          const album = await fetchAlbum(albumName, 1);
 
           setSongs([]);
           setAlbum(album);
-          setPrevSearch(""); // reset prevSearch to allow similar term as song later
+          setPrevSearch(albumName);
         }
         return;
       }

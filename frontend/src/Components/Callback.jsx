@@ -15,21 +15,26 @@ const Callback = () => {
     }
   
     const fetchTokens = async () => {
-      const res = await fetch("api/getAccessToken", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
-  
-      const data = await res.json();
-      
-      if (data.access_token && data.refresh_token) {
-        localStorage.setItem("accessToken", data.access_token);
-        localStorage.setItem("refreshToken", data?.refresh_token);
-        localStorage.setItem("tokenExpiry", (Date.now() + data.expires_in * 1000 - 60 * 1000).toString());
-        navigate("/");
-      } else {
-        navigate("/login");
+        try {
+        const res = await fetch("api/getAccessToken", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        });
+    
+        const data = await res.json();
+        
+        if (data?.access_token && data?.refresh_token) {
+          localStorage.setItem("accessToken", data.access_token);
+          localStorage.setItem("refreshToken", data.refresh_token);
+          localStorage.setItem("tokenExpiry", (Date.now() + data.expires_in * 1000 - 60 * 1000).toString());
+          navigate("/");
+        } else {
+          navigate("/login");
+        }
+      } catch (error) {
+          console.log("error getting access Token", error);
+          navigate("/login");  
       }
     };
   

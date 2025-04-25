@@ -15,7 +15,9 @@ const Profile = lazy(() => import("./Profile"));
 const SingerDetails = lazy(() => import("./SingerDetails"));
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 const Callback = lazy(() => import("./Callback"));
-const AlbumDetails = lazy(() => import("./AlbumDetails"))
+const AlbumDetails = lazy(() => import("./AlbumDetails"));
+const Logout = lazy(() => import("./Logout"));
+
 
 
 const router = createBrowserRouter(
@@ -34,6 +36,7 @@ const router = createBrowserRouter(
       <Route path="premium" element={<Premium />} />
       <Route path="profile" element={<Profile />} />
       <Route path="artist/:name" element={<SingerDetails />} />
+      <Route path="logout" element={<Logout />} />
     </Route>
   )
 );

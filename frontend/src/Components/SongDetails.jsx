@@ -1,6 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
 import { lazy, useState, useEffect, memo, useRef } from "react";
-import sendId from "../../features/songId";
 import { playSongById } from "../../index";
 import { fetchSongById } from "../../features/AccessToken";
 import useCurrentSongStore from "../../app/currentSongStore";
@@ -13,7 +12,7 @@ function SongDetails() {
   const params = useParams();
   const songId = params.songId;
   const location = useLocation();
-  const { currentSongId, isPlaying, setCurrentArtistId } = useCurrentSongStore();
+  const { currentSongId, isPlaying } = useCurrentSongStore();
   
   const [song, setSong] = useState(null);
   const recoRef = useRef();
@@ -26,7 +25,7 @@ function SongDetails() {
     async function loadSongDetails() {
       if (location?.state?.song) {
         setSong(location.state.song);
-        setCurrentArtistId(location.state.song.artistId[0]);
+        setCurrentArtistId(location?.state.song.artistId[0]);
         return;
       }
       const fs = await fetchSongById(songId);
@@ -40,7 +39,6 @@ function SongDetails() {
         artistId: fs?.artists?.map((artist) => artist.id)
       };
       setSong(fetchedSong);
-      setCurrentArtistId(song.artistId[0]);
     }
     loadSongDetails();
   }, [songId]);
@@ -53,7 +51,6 @@ function SongDetails() {
     if (currentSongId === songId) {
       await player.resume();
     } else {
-      sendId(song.name);
       playSongById(songId);
     }
   }
