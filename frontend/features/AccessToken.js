@@ -12,7 +12,6 @@ export const fetchAccessToken = async () => {
 };
 
 export const accessToken = await fetchAccessToken()
-console.log(accessToken);
 
 //function that fetch the demanded songs
 export const fetchSongs = async (query, limit = 20) => {

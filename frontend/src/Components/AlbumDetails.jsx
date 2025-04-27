@@ -2,7 +2,6 @@ import { useLocation, useParams } from "react-router-dom";
 import { lazy, useState, useEffect } from "react";
 import { playAlbumById, playSongById } from "../../index";
 import { fetchAlbumsTracks, fetchAlbumById } from "../../features/AccessToken"
-import { player } from "./SongDetails"
 import useCurrentSongStore from "../../app/currentSongStore";
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
@@ -11,7 +10,7 @@ const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
 
 export default function AlbumDetails() {
-  const { currentSongId, isPlaying, setCurrentAlbumId } = useCurrentSongStore();
+  const { currentSongId, isPlaying, setCurrentAlbumId, player } = useCurrentSongStore();
   const location = useLocation();
   const params = useParams();
   const AlbumId = params.albumId;

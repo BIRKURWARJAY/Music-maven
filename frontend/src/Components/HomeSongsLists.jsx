@@ -13,7 +13,7 @@ export default function HomeSongsList({ displayName, songQuery }) {
     const loadSongs = async () => {
       setLoading(true);
 
-      const songs = await fetchSongs(songQuery, 20, 10);
+      const songs = await fetchSongs(songQuery, 20);
 
       if (songs === "errAccess") {
         setError(true);

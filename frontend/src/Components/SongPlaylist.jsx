@@ -24,7 +24,7 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
     >
       <div className="song-playlist w-full flex justify-between items-center relative">
         <div className="flex gap-3 w-[75%] items-center relative">
-          <div className="relative">
+          <div className="relative cursor-pointer">
             <img
               loading="lazy"
               src={song.imageUrl}
@@ -104,16 +104,16 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
         {isHovered ? (
           <div className="flex gap-2 items-center">
             <i
-              className={`fa-regular fa-thumbs-up text-2xl text-white px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-5 `}
+              className={`fa-regular cursor-pointer fa-thumbs-up text-2xl text-white px-3 py-2 rounded-full hover:bg-white hover:bg-opacity-5 `}
               title="Like the Song"
             ></i>
             <input
               type="checkbox"
-              className=" size-4 "
+              className=" size-4 cursor-pointer"
               title="Add to Playlist"
             />
             <i
-              className="fa-solid fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"
+              className="fa-solid cursor-pointer fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"
               title="Details"
             ></i>
           </div>

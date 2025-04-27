@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import getValidAccessToken from './index.js';
-import { registerUser, loginUser, logoutUser, updateUser } from './controllers/user.controller.js';
+import { registerUser, loginUser, logoutUser } from './controllers/user.controller.js';
 
 
 export const app = express();

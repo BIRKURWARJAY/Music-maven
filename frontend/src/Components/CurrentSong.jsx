@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import sendId from "../../features/songId";
-import { player } from "./SongDetails";
 import { fetchSongById } from "../../features/AccessToken";
 import useCurrentSongStore from "../../app/currentSongStore";
 
@@ -10,7 +9,7 @@ export default function CurrentSong() {
   const intervalRef = useRef(null);
   const currentSongIdRef = useRef(null);
 
-  const { currentSongId, setCurrentSongId, isPlaying, setIsPlaying, setCurrentArtistId, currentAlbumId, setCurrentAlbumId, currentPosition, setCurrentPosition } = useCurrentSongStore();
+  const { currentSongId, setCurrentSongId, isPlaying, setIsPlaying, setCurrentArtistId, currentAlbumId, setCurrentAlbumId, currentPosition, setCurrentPosition, player } = useCurrentSongStore();
 
   const formatTime = (sec) => {
     const minutes = Math.floor(sec / 60);
@@ -24,7 +23,7 @@ export default function CurrentSong() {
   const currSongDuration = formatTime(currentPosition);
   
 
-  useEffect(() => {
+  useEffect(() => {    
 
     const playerState = ({ paused }) => {
       if (!paused) {
@@ -36,17 +35,17 @@ export default function CurrentSong() {
       }
     }
 
-    player.addListener('player_state_changed', playerState);
+    player?.addListener('player_state_changed', playerState);
 
     return () => {
-      player.removeListener('player_state_changed', playerState);
+      player?.removeListener('player_state_changed', playerState);
     }
-  }, [])
+  }, [player])
 
 
   useEffect(() => {
     (async () => {
-      const state = await player.getCurrentState();
+      const state = await player?.getCurrentState();
       if (!state) return;
 
 
@@ -64,13 +63,15 @@ export default function CurrentSong() {
 
     })();
 
-  }, [currentSongId])
+  }, [currentSongId, player])
 
 
   useEffect(() => {
+    
+
     intervalRef.current = setInterval(async () => {
 
-      const state = await player.getCurrentState();
+      const state = await player?.getCurrentState();
       if (!state) return;
       const currentId = state.track_window.current_track.id;
       
@@ -89,7 +90,7 @@ export default function CurrentSong() {
     }, 1000);
 
     return () => clearInterval(intervalRef.current);
-  }, [isPlaying]);
+  }, [isPlaying, player]);
 
 
   useEffect(() => {
@@ -109,11 +110,13 @@ export default function CurrentSong() {
         artistId: song.artists?.map((artist) => artist.id),
       };
 
+      sendId(song.name);
       setSong(formatted);
     }
 
+
     getSongInfo();
-  }, [currentSongId]);
+  }, [currentSongId, player]);
   
 
   async function resumeSong() {

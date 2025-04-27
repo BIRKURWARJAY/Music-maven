@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { isLoggedIn } from "./Home";
-
+import useCurrentSongStore from "../../app/currentSongStore";
 
 export default function Aside() {
-
+  const { isLoggedIn } = useCurrentSongStore();
+  
+  
 
   return (
     <>

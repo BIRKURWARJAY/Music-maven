@@ -4,7 +4,6 @@ import { playSongById } from "../../index";
 import { fetchSongById } from "../../features/AccessToken";
 import useCurrentSongStore from "../../app/currentSongStore";
 
-export const player = window.onSpotifyWebPlaybackSDKReady();
 
 const SongPlaylist = lazy(() => import("./SongPlaylist"));
 
@@ -12,7 +11,7 @@ function SongDetails() {
   const params = useParams();
   const songId = params.songId;
   const location = useLocation();
-  const { currentSongId, isPlaying } = useCurrentSongStore();
+  const { currentSongId, isPlaying, setCurrentArtistId, player } = useCurrentSongStore();
   
   const [song, setSong] = useState(null);
   const recoRef = useRef();

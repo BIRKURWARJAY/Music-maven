@@ -27,6 +27,7 @@ export default function Genres() {
       return;
     }
     const tracks = await fetchTracksByGenre(genre);
+    console.log(tracks);    
     setGenreTracks(tracks);
   }
 

@@ -1,7 +1,6 @@
 import { lazy, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { isLoggedIn } from "./Home";
-
+import useCurrentSongStore from "../../app/currentSongStore";
 
 
 
@@ -9,7 +8,7 @@ const SearchBar = lazy(() => import("./SearchBar"));
 const Aside = lazy(() => import("./Aside"));
 
 export default function Header() {
-
+  const { isLoggedIn } = useCurrentSongStore();
 
   const handleScroll = () => {
     let header = document.querySelector("header");
