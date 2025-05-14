@@ -3,18 +3,19 @@ import { Link } from "react-router-dom";
 import sendId from "../../features/songId";
 import useCurrentSongStore from "../../app/currentSongStore";
 
-
-
-
-export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
+export default function SongPlaylist({
+  song,
+  duration,
+  resumeSong,
+  pauseSong
+}) {
   const [isHovered, setIsHovered] = useState(false);
   const songMin = Math.floor(song.duration / 60000);
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
   const { currentSongId, isPlaying } = useCurrentSongStore();
-  
-  const isCurrentSongPlaying = currentSongId === song.songId && isPlaying;  
-  
+
+  const isCurrentSongPlaying = currentSongId === song.songId && isPlaying;
 
   return (
     <div
@@ -31,7 +32,7 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
               alt={song.name}
               className={`size-16 rounded-md transition-all duration-300 ${isHovered ? "brightness-50" : ""}`}
             />
-            {((!isCurrentSongPlaying) )  && (
+            {!isCurrentSongPlaying && (
               <i
                 className="fa-solid fa-play text-xl absolute inset-0 flex items-center justify-center text-white"
                 onClick={() => {
@@ -40,8 +41,8 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
                 }}
               ></i>
             )}
-  
-            {(isCurrentSongPlaying && isPlaying ) && (
+
+            {isCurrentSongPlaying && isPlaying && (
               <i
                 className="fa-solid fa-pause text-xl absolute inset-0 flex items-center justify-center text-white"
                 onClick={() => {
@@ -51,53 +52,65 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
             )}
           </div>
           <div className="song-playlist-info max-w-[100%] overflow-hidden">
-            <h3 className="font-bold text-xl">{song.name}</h3>
+            <h3 className="font-bold text-xl">
+              {song.name?.length > 50 ? (
+                <marquee
+                  behavior="alternate"
+                  scrollamount="5"
+                  scrolldelay="100"
+                >
+                  {song.name}
+                </marquee>
+              ) : (
+                song.name
+              )}
+            </h3>
             {song.artist.join(", ").length < 70 ? (
               <p className="text-[#7F7676] font-semibold">
-              {song.artist?.map((artist, index) => (
-                <span key={`${song.songId}-${index}`}>
-                  <span>
-                    <Link
-                      to={`/artist/${artist.split(" ").join("")}`}
-                      state={{ artist, artistId: song.artistId[index] }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.textDecoration = "underline";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.textDecoration = "none";
-                      }}
-                    >
-                      {artist}
-                    </Link>
-                    {index < song.artist.length - 1 ? "  ,  " : ""}
-                    {index === song.artist.length - 2 ? "  &  " : ""}
+                {song.artist?.map((artist, index) => (
+                  <span key={`${song.songId}-${index}`}>
+                    <span>
+                      <Link
+                        to={`/artist/${artist.split(" ").join("")}`}
+                        state={{ artist, artistId: song.artistId[index] }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.textDecoration = "underline";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.textDecoration = "none";
+                        }}
+                      >
+                        {artist}
+                      </Link>
+                      {index < song.artist.length - 1 ? "  ,  " : ""}
+                      {index === song.artist.length - 2 ? "  &  " : ""}
+                    </span>
                   </span>
-                </span>
-              ))}
-            </p>
+                ))}
+              </p>
             ) : (
               <p className="text-[#7F7676] animate-marqueeArtistName whitespace-nowrap hover:[animation-play-state:paused] font-semibold">
-              {song.artist?.map((artist, index) => (
-                <span key={`${song.songId}-${index}`}>
-                  <span>
-                    <Link
-                      to={`/artist/${artist.split(" ").join("")}`}
-                      state={{ artist, artistId: song.artistId[index] }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.textDecoration = "underline";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.textDecoration = "none";
-                      }}
-                    >
-                      {artist}
-                    </Link>
-                    {index < song.artist.length - 1 ? "  ,  " : ""}
-                    {index === song.artist.length - 2 ? "  &  " : ""}
+                {song.artist?.map((artist, index) => (
+                  <span key={`${song.songId}-${index}`}>
+                    <span>
+                      <Link
+                        to={`/artist/${artist.split(" ").join("")}`}
+                        state={{ artist, artistId: song.artistId[index] }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.textDecoration = "underline";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.textDecoration = "none";
+                        }}
+                      >
+                        {artist}
+                      </Link>
+                      {index < song.artist.length - 1 ? "  ,  " : ""}
+                      {index === song.artist.length - 2 ? "  &  " : ""}
+                    </span>
                   </span>
-                </span>
-              ))}
-            </p>
+                ))}
+              </p>
             )}
           </div>
         </div>
@@ -117,8 +130,10 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
               title="Details"
             ></i>
           </div>
+        ) : duration ? (
+          duration
         ) : (
-          duration ? duration : songDuration
+          songDuration
         )}
       </div>
     </div>

@@ -16,6 +16,7 @@ function SongDetails() {
   const [song, setSong] = useState(null);
   const recoRef = useRef();
   
+  
   const isCurrentSongPlaying = isPlaying && currentSongId === songId;
 
   /////////////////////////////work on autoplay tracks after one finished by setting an array of tracks;

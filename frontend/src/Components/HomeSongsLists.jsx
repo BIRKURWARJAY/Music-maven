@@ -26,6 +26,7 @@ export default function HomeSongsList({ displayName, songQuery }) {
 
     loadSongs();
   }, []);
+  
 
   return (
     <div className="trending-songs-container flex flex-col bg-transparent my-4 ml-28 mx-16">
@@ -51,7 +52,7 @@ export default function HomeSongsList({ displayName, songQuery }) {
               song={{
                 songId: song?.id,
                 imageUrl: song.album?.images[0]?.url,
-                name: song?.name,
+                name: song?.name.includes("(") ? song?.name.split("(")[0] : song?.name.includes("-") ? song?.name.split("-")[0] : song?.name,
                 artist: song?.artists?.map((artist) => artist.name),
                 release: song.album?.release_date,
                 duration: song?.duration_ms,

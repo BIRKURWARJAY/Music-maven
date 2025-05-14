@@ -103,7 +103,7 @@ export default function CurrentSong() {
       const formatted = {
         songId: song.id,
         imageUrl: song.album?.images[0]?.url,
-        name: song.name,
+        name:  song.name.includes("(") ? song.name.split("(")[0] : song.name.includes("-") ? song.name.split("-")[0] : song.name,
         artists: song.artists?.map((artist) => artist.name),
         release: song.album?.release_date,
         duration: song.duration_ms,

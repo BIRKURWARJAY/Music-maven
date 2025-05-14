@@ -51,7 +51,7 @@ export default function HomeArtists({ displayName, songQuery }) {
               album={{
                 albumId: album?.id,
                 imageUrl: album?.images[0]?.url,
-                name: album?.name,
+                name: album.name.includes("(") ? album.name.split("(")[0] : album.name.includes("-") ? album.name.split("-")[0] : album.name,
                 artist: album?.artists?.map((artist) => artist.name),
                 release: album?.release_date,
                 duration: album?.duration_ms,
