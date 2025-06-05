@@ -14,7 +14,6 @@ function SongDetails() {
   const { currentSongId, isPlaying, setCurrentArtistId, player } = useCurrentSongStore();
   
   const [song, setSong] = useState(null);
-  const recoRef = useRef();
   
   const isCurrentSongPlaying = isPlaying && currentSongId === songId;
 

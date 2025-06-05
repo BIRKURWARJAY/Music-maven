@@ -116,7 +116,7 @@ export default function CurrentSong() {
 
 
     getSongInfo();
-  }, [currentSongId, player]);
+  }, [player]);
   
 
   async function resumeSong() {

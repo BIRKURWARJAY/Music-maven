@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const fetchAccessToken = async () => {
+const fetchAccessToken = async () => {
   try {
     const res = await axios.get("/api/generalToken");
     
@@ -11,7 +11,25 @@ export const fetchAccessToken = async () => {
   }
 };
 
-export const accessToken = await fetchAccessToken()
+let accessToken = await fetchAccessToken();
+
+// Function to refresh the access token
+export const refreshAccessToken = async () => {
+  try {
+    const res = await axios.post("/api/refreshAccessToken", {
+      refreshToken: localStorage.getItem("refreshToken")
+    });
+    if (res.data.accessToken) {
+      accessToken = res.data.accessToken;
+      localStorage.setItem("accessToken", accessToken);
+      console.log("Access token refreshed successfully");
+    } else {
+      console.error("Failed to refresh access token");
+    }
+  } catch (err) {
+    console.error("Error refreshing access token:", err);
+  }
+};
 
 //function that fetch the demanded songs
 export const fetchSongs = async (query, limit = 20) => {

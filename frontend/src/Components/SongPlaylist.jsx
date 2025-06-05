@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import sendId from "../../features/songId";
 import useCurrentSongStore from "../../app/currentSongStore";
+import {removeLikedSong, addLikedSong, getLikedSongs} from "../utils/likedSongs.util.js"
 
 
 
@@ -12,8 +13,16 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
   const songSec = ((song.duration % 60000) / 1000).toFixed(0);
   const songDuration = `${songMin} : ${songSec < 10 ? "0" : ""} ${songSec}`;
   const { currentSongId, isPlaying } = useCurrentSongStore();
+  const [isChecked, setIsChecked] = useState(false);
   
   const isCurrentSongPlaying = currentSongId === song.songId && isPlaying;  
+
+
+  useEffect(() => {
+    (async () => {
+      await getLikedSongs(song, setIsChecked);
+    })();
+  }, [])
   
 
   return (
@@ -111,9 +120,14 @@ export default function SongPlaylist({ song, duration, resumeSong, pauseSong}) {
               type="checkbox"
               className=" size-4 cursor-pointer"
               title="Add to Playlist"
+              onChange={() => setIsChecked(!isChecked)}
+              defaultChecked={isChecked}
+              onClick={() => {
+                isChecked ? removeLikedSong(song.songId) : addLikedSong(song, songDuration);
+              }}
             />
             <i
-              className="fa-solid cursor-pointer fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"
+              className="fa-solid cursor-poilnter fa-ellipsis-vertical text-xl px-5 py-2 hover:bg-white hover:bg-opacity-5 rounded-full"
               title="Details"
             ></i>
           </div>

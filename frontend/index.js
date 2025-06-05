@@ -120,7 +120,6 @@ export async function playSongById(songId) {
         uris: [`spotify:track:${songId}`]
       })
     });
-    console.log("Song is Playing");
   } catch (error) {
     console.error("❌ Error playing song:", error);
   }
