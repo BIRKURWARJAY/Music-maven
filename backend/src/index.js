@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 dotenv.config();
 connectDB();
 
-const clientId = process.env.CLIENTID;
-const clientSecret = process.env.CLIENTSECRET;
+const clientId = "6165f00cf08c4e44837ce912f57d6e6d";
+const clientSecret = "1dfb3383fba14678b42d3e66159d1e6c";
 
 let accessToken = null;
 let tokenExpiryTime = null;

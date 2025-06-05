@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import getValidAccessToken from './index.js';
 import { registerUser, loginUser, logoutUser } from './controllers/user.controller.js';
+import { getLikedSongs, addLikedSong, removeLikedSong, deleteLikedSong } from './controllers/likedSongs.controller.js';
 
 
 export const app = express();
@@ -31,8 +32,8 @@ app.post("/api/getAccessToken", async (req, res) => {
   params.append("grant_type", "authorization_code");
   params.append("code", code);
   params.append("redirect_uri", "http://localhost:5173/callback");
-  params.append("client_id", process.env.CLIENTID);
-  params.append("client_secret", process.env.CLIENTSECRET);
+  params.append("client_id", "6165f00cf08c4e44837ce912f57d6e6d");
+  params.append("client_secret", "1dfb3383fba14678b42d3e66159d1e6c");
 
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -57,8 +58,8 @@ app.post("/api/refreshAccessToken", async (req, res) => {
   const params = new URLSearchParams();
   params.append("grant_type", "refresh_token");
   params.append("refresh_token", refreshToken);
-  params.append("client_id", process.env.CLIENTID);
-  params.append("client_secret", process.env.CLIENTSECRET);
+  params.append("client_id", "6165f00cf08c4e44837ce912f57d6e6d");
+  params.append("client_secret", "1dfb3383fba14678b42d3e66159d1e6c");
 
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -87,6 +88,19 @@ app.post("/api/accessSongId", async (req, res) => {
     console.error("ERROR Receiving songId:::");   
   }
 })
+
+
+//Getting LikedSongs
+app.get("/api/getLikedSongs", getLikedSongs);
+
+//Adding LikedSong
+app.post("/api/addLikedSong", addLikedSong);
+
+//Removing LikedSong
+app.post("/api/removeLikedSong", removeLikedSong);
+
+//Deleting LikedSong
+app.post("/api/deleteLikedSong", deleteLikedSong);
 
 
 //Getting user data from frontend for signup

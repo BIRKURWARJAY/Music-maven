@@ -41,6 +41,40 @@ const userSchema = new mongoose.Schema({
     }
   ],
 
+  likedSongs: [
+    {
+      songId: {
+        type: String,
+        required: true
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      artist:
+        [
+          {
+            type: String,
+            required: true
+          }
+        ],
+      artistId: [
+        {
+          type: String,
+          required: true
+        }
+      ],
+      imageUrl: {
+        type: String,
+        required: true
+      },
+      songDuration: {
+        type: String,
+        required: true
+      }
+    }
+  ],
+
   streams: [
     {
       type: mongoose.Schema.Types.ObjectId,
