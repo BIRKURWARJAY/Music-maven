@@ -46,7 +46,7 @@ const getValidAccessToken = async () => {
 };
 
 setInterval(async () => {
- accessToken =  await getValidAccessToken()
+ accessToken = await getValidAccessToken()
 }, 59 * 60 * 1000 + 1000);
 
 
