@@ -12,7 +12,7 @@ export default defineConfig({
     }
   },
    build: {
-    target: 'es2022', // or 'esnext' if you prefer
+    target: 'es2022'
   },
   plugins: [react()],
 })

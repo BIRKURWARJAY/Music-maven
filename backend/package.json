@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon src/index.js, src/app.js"
+    "start": "node src/index.js, src/app.js"
   },
   "author": "Birkurwar Jay",
   "license": "ISC",
