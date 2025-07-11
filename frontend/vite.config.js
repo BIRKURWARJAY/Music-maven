@@ -6,13 +6,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'music-backend-ftw76mys0-birkurwar-jays-projects.vercel.app',
+        target: 'http://localhost:3000',
         changeOrigin: true,
       }
     }
-  },
-   build: {
-    target: 'es2022'
   },
   plugins: [react()],
 })

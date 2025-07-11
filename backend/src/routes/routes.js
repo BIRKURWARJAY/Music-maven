@@ -1,4 +1,4 @@
-import getValidAccessToken from '../index.js';
+import getValidAccessToken from "../utils/getAccessToken.js";
 import { registerUser, loginUser, logoutUser } from '../controllers/user.controller.js';
 import { Router } from 'express';
 
@@ -7,10 +7,10 @@ const routes = Router();
 //Sending accessToken on api to get fetch from frontend 
 routes.get("/generalToken", async (req, res) => {
   try {
-    const newAccessToken = await getValidAccessToken();    
-    res.json({ accessToken: newAccessToken });
+    const newAccessToken = await getValidAccessToken();
+    return res.json({ accessToken: newAccessToken });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch access token" });
+    return res.status(500).json({ error: "Failed to fetch access token" });
   }
 });
 
