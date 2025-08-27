@@ -6,7 +6,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: `https://music-maven-backend.onrender.com`,
+        // target: `https://music-maven-backend.onrender.com`,
         changeOrigin: true,
       }
     }

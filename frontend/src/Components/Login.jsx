@@ -7,7 +7,7 @@ import { useState } from "react";
 //function to redirect to Spotify authorization page
 export const redirectToSpotifyAuth = () => {
   const CLIENT_ID = `${import.meta.env.VITE_CLIENT_ID}`;
-  const REDIRECT_URI = "http://localhost:5173/callback";
+  const REDIRECT_URI = "https://music-maven.vercel.app/callback";
   const SCOPES = [
     "streaming",
     "user-library-read",
